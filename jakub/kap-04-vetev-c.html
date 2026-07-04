@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<script>
+  (function(){
+    if(localStorage.getItem('hh-theme')==='light'){
+      document.documentElement.classList.add('light');
+    }
+  })();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Husité – Zatčení Husa / Větev C – Jakub Vlček</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=IM+Fell+English:ital@0;1&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { --bg: #0d0b08; --bg-bar: #2a2418; --bg-card: #131008; --bg-menu: #1a1510;
+    --border: #1e1a10; --border-mid: #3a3020; --gold: #b8962e; --gold-dim: #7a6840;
+    --text-main: #c8b890; --text-dim: #8a7a5a; --text-faint: #5a5030;
+    --text-head: #f0e6c8; --fs: 18px; }
+  
+  html, body { background: var(--bg); min-height: 100%; }
+  .hh { background: var(--bg); font-family: 'Oswald', sans-serif; color: var(--text-main);
+    max-width: 960px; margin: 0 auto; padding-bottom: 5rem; min-height: 100vh; transition: background 0.3s; }
+  .hh-topbar { display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem; height: 62px; border-bottom: 1px solid var(--border-mid);
+    background: var(--bg-bar); position: sticky; top: 0; z-index: 100; gap: 1rem; transition: background 0.3s; }
+  .hh-topbar-left { display: flex; flex-direction: column; gap: 2px; flex-shrink: 0; }
+  .hh-tb-logo { font-size: 18px; font-weight: 700; letter-spacing: 5px; text-transform: uppercase;
+    color: var(--gold); line-height: 1; background: none; border: none;
+    font-family: 'Oswald', sans-serif; padding: 0; text-decoration: none; }
+  .hh-tb-sub { font-size: 10px; letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase; }
+  .hh-topbar-right { display: flex; align-items: center; gap: 0.8rem; }
+  .hh-theme-switch { display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; }
+  .hh-theme-icon { font-size: 13px; color: #c8a84a; width: 14px; text-align: center; }
+  .hh-switch-track { width: 34px; height: 18px; background: #1a1408; border-radius: 9px;
+    position: relative; border: 1px solid #6a5828; transition: background 0.3s; }
+  .hh-switch-knob { width: 12px; height: 12px; background: var(--gold); border-radius: 50%;
+    position: absolute; top: 2px; left: 2px; transition: transform 0.25s; }
+  html.light .hh-switch-knob { transform: translateX(16px); }
+  .hh-fs-switch { display: flex; align-items: center; gap: 2px; background: #1a1408;
+    border: 1px solid #5a4820; border-radius: 2px; padding: 2px; transition: background 0.3s; }
+  .hh-fs-btn { background: none; border: none; cursor: pointer; font-family: 'Oswald', sans-serif;
+    font-weight: 600; color: #c8a84a; padding: 4px 7px; border-radius: 1px; line-height: 1; transition: background 0.15s, color 0.15s; }
+  .hh-fs-btn.active { background: var(--gold); color: #0d0b08; }
+  .hh-fs-btn.s { font-size: 10px; } .hh-fs-btn.m { font-size: 13px; } .hh-fs-btn.l { font-size: 16px; }
+  .hh-char-badge { display: flex; align-items: center; gap: 8px; }
+  .hh-char-avatar { width: 36px; height: 36px; border-radius: 50%; overflow: hidden;
+    border: 2px solid var(--gold); background: #1a1510; flex-shrink: 0; box-shadow: 0 0 0 2px var(--border-mid); }
+  .hh-char-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: top center; filter: saturate(0.5) contrast(1.1); }
+  .hh-char-badge-name { font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--gold-dim); white-space: nowrap; }
+  .hh-burger { display: flex; flex-direction: column; justify-content: center; gap: 4px;
+    width: 36px; height: 36px; cursor: pointer; background: none; border: 1px solid #6a5828;
+    border-radius: 2px; padding: 6px 7px; transition: border-color 0.15s; flex-shrink: 0; }
+  .hh-burger:hover, .hh-burger.open { border-color: var(--gold); }
+  .hh-burger span { display: block; height: 1.5px; background: #c8a84a; border-radius: 1px; }
+  .hh-burger:hover span, .hh-burger.open span { background: var(--gold); }
+  .hh-overlay { display: none; position: fixed; inset: 0; z-index: 99; }
+  .hh-overlay.open { display: block; }
+  .hh-dropdown { position: absolute; top: calc(100% + 8px); right: 2rem; min-width: 260px;
+    z-index: 200; display: none; box-shadow: 0 8px 24px rgba(0,0,0,0.4); border-radius: 2px;
+    border: 1px solid var(--border-mid); background: var(--bg-menu); }
+  .hh-dropdown.open { display: block; }
+  .hh-menu-item { display: flex; align-items: center; justify-content: space-between;
+    padding: 11px 16px; font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--text-dim); cursor: pointer; border-bottom: 1px solid var(--border);
+    transition: background 0.12s, color 0.12s; text-decoration: none; }
+  .hh-menu-item:last-child { border-bottom: none; }
+  .hh-menu-item:hover { background: var(--bg-card); color: var(--gold); }
+  .hh-menu-item .arrow { font-size: 10px; transition: transform 0.2s; }
+  .hh-menu-item.sub-open .arrow { transform: rotate(90deg); }
+  .hh-submenu { display: none; background: var(--bg-card); border-top: 1px solid var(--border); }
+  .hh-submenu.open { display: block; }
+  .hh-submenu-item { display: flex; align-items: center; gap: 10px; padding: 9px 16px 9px 28px;
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-faint);
+    cursor: pointer; border-bottom: 1px solid var(--border); transition: color 0.12s; text-decoration: none; }
+  .hh-submenu-item:last-child { border-bottom: none; }
+  .hh-submenu-item:hover { color: var(--gold); }
+  .hh-submenu-item.current { color: var(--gold); }
+  .hh-submenu-item .kap-num { font-size: 11px; font-weight: 700; color: var(--gold-dim); width: 16px; flex-shrink: 0; }
+  .hh-submenu-item.locked { opacity: 0.35; cursor: default; pointer-events: none; }
+  .hh-chapter-image { width: 100%; height: 350px; overflow: hidden; position: relative; }
+  .hh-chapter-image img { width: 100%; height: 100%; object-fit: cover; object-position: center 20%;
+    display: block; filter: contrast(1.05) saturate(0.55) brightness(0.82); transition: filter 0.3s; }
+  .hh-chapter-image-caption { position: absolute; bottom: 0; left: 0; right: 0; padding: 10px 2rem;
+    background: linear-gradient(transparent, rgba(8,6,3,0.85)); font-size: 10px;
+    letter-spacing: 3px; color: #7a6840; text-transform: uppercase; }
+  .hh-chapter-image.below { margin-top: 0; }
+  .hh-chapter-header { padding: 2.2rem 2rem 0; }
+  .hh-chapter-num { font-size: 11px; letter-spacing: 6px; color: var(--text-faint); text-transform: uppercase; margin-bottom: 8px; }
+  .hh-chapter-title { font-size: 38px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--text-head); line-height: 1.1; }
+  .hh-chapter-meta { font-size: 12px; letter-spacing: 3px; color: var(--gold-dim); margin-top: 8px; text-transform: uppercase; }
+  .hh-kap-rule { width: 80px; height: 1px; background: linear-gradient(90deg, var(--gold), transparent); margin: 1.2rem 0 0; }
+  .hh-choice-badge { margin: 1.8rem 2rem 0; display: inline-flex; align-items: center; gap: 12px;
+    background: var(--bg-card); border: 1px solid var(--border-mid); border-left: 2px solid var(--gold);
+    padding: 12px 18px; border-radius: 2px; }
+  .hh-choice-badge-letter { font-size: 13px; font-weight: 700; color: var(--gold); }
+  .hh-choice-badge-text { font-family: 'IM Fell English', serif; font-size: 14px; color: var(--text-dim); font-style: italic; }
+  .hh-text { padding: 2rem 2rem 0; max-width: 680px; }
+  .hh-text p { font-family: 'IM Fell English', serif; font-size: var(--fs); line-height: 1.85; color: var(--text-main); margin-bottom: 1.4em; transition: color 0.3s; }
+  .hh-placeholder { margin: 3rem 2rem; padding: 2rem; border: 1px dashed var(--border-mid);
+    border-radius: 2px; text-align: center; }
+  .hh-placeholder p { font-family: 'IM Fell English', serif; font-size: 16px; color: var(--text-faint); font-style: italic; }
+  .hh-choices-wrap { padding: 2.4rem 2rem 0; max-width: 680px; }
+  .hh-choices-label { font-size: 10px; letter-spacing: 5px; color: var(--text-faint); text-transform: uppercase; margin-bottom: 1.2rem; }
+  .hh-choices { display: flex; flex-direction: column; gap: 10px; }
+  .hh-choice { display: flex; align-items: flex-start; gap: 16px; background: var(--bg-card);
+    border: 1px solid var(--border); padding: 16px 20px; cursor: pointer;
+    transition: all 0.18s; border-radius: 2px; text-decoration: none; color: inherit; }
+  .hh-choice:hover { border-color: var(--gold); }
+  .hh-choice-letter { font-size: 18px; font-weight: 700; color: var(--text-faint);
+    flex-shrink: 0; width: 24px; line-height: 1.5; transition: color 0.15s; }
+  .hh-choice:hover .hh-choice-letter { color: var(--gold); }
+  .hh-choice-text { font-family: 'IM Fell English', serif; font-size: calc(var(--fs, 18px) * 0.9); color: var(--text-dim); line-height: 1.6; transition: color 0.15s; }
+  .hh-choice:hover .hh-choice-text { color: var(--text-head); }
+  .hh-chapter-end { padding: 2.4rem 2rem 0; max-width: 680px; }
+  .hh-end-rule { width: 100%; height: 1px; background: linear-gradient(90deg, var(--border-mid), transparent); margin-bottom: 2rem; }
+  .hh-end-label { font-size: 10px; letter-spacing: 5px; color: var(--text-faint); text-transform: uppercase; margin-bottom: 1.4rem; }
+  .hh-next-btn { display: inline-flex; align-items: center; gap: 12px; background: transparent;
+    border: 1px solid var(--gold); color: var(--gold); font-family: 'Oswald', sans-serif;
+    font-size: 12px; font-weight: 600; letter-spacing: 4px; text-transform: uppercase;
+    padding: 13px 28px; cursor: pointer; transition: all 0.18s; text-decoration: none; }
+  .hh-next-btn:hover { background: var(--gold); color: #0d0b08; }
+  @media (max-width: 720px) {
+    .hh-topbar { padding: 0 1rem; gap: 0.6rem; }
+    .hh-chapter-header { padding: 1.6rem 1.2rem 0; }
+    .hh-chapter-title { font-size: 26px; }
+    .hh-text { padding: 1.4rem 1.2rem 0; }
+    .hh-choices-wrap { padding: 2rem 1.2rem 0; }
+    .hh-choice-badge { margin: 1.2rem 1.2rem 0; }
+    .hh-chapter-end { padding: 1.8rem 1.2rem 0; }
+    .hh-placeholder { margin: 2rem 1.2rem; }
+    .hh-dropdown { right: 1rem; }
+    .hh-char-badge-name { display: none; }
+    .hh-chapter-image { height: 220px; }
+  }
+  @media (max-width: 480px) {
+    .hh-chapter-title { font-size: 20px; }
+    .hh-fs-switch { display: none; }
+    .hh-chapter-image { height: 180px; }
+  }
+
+
+
+
+
+  /* ════ SVĚTLÝ REŽIM – aplikuje se přes html.light ════
+     Head script přidá třídu na <html> okamžitě před vykreslením.
+     Funguje v Chrome, Firefox, Edge, Safari. */
+  html.light,
+  html.light body { background: #f4f0e6; }
+  html.light body {
+    --bg: #f4f0e6; --bg-bar: #ddd5be; --bg-card: #e8e0cc; --bg-menu: #e0d8c4;
+    --border: #d4c9aa; --border-mid: #c4b898; --gold: #8a6e18; --gold-dim: #a08830;
+    --text-main: #2a2010; --text-dim: #5a4e30; --text-faint: #8a7e60; --text-head: #18120a;
+  }
+  html.light .hh-theme-icon { color: #7a6840; }
+  html.light .hh-switch-track { background: #d4c9aa; border-color: #c4b898; }
+  html.light .hh-burger { border-color: #c4b898; }
+  html.light .hh-burger span { background: #7a6840; }
+  html.light .hh-chapter-image img { filter: contrast(1.05) saturate(0.7) brightness(0.9); }
+  html.light .hh-fs-btn { color: #5a4830; }
+  html.light .hh-fs-btn:hover { color: #8a6e18; }
+  html.light .hh-fs-btn.active { background: #8a6e18; color: #f4f0e6; }
+  html.light .hh-fs-switch { background: #ddd5be; border-color: #c4b898; }
+
+</style>
+</head>
+<body>
+<div class="hh">
+
+  <div class="hh-topbar">
+    <div class="hh-topbar-left">
+      <a class="hh-tb-logo" href="../index.html">Husité</a>
+      <span class="hh-tb-sub">Díl I &nbsp;·&nbsp; Mistr Jan Hus</span>
+    </div>
+    <div class="hh-topbar-right">
+      <div class="hh-theme-switch" onclick="toggleTheme()">
+        <span class="hh-theme-icon">☾</span>
+        <div class="hh-switch-track"><div class="hh-switch-knob"></div></div>
+        <span class="hh-theme-icon">☀</span>
+      </div>
+      <div class="hh-fs-switch">
+        <button class="hh-fs-btn s" onclick="setFs('small')">A</button>
+        <button class="hh-fs-btn m active" onclick="setFs('medium')">A</button>
+        <button class="hh-fs-btn l" onclick="setFs('large')">A</button>
+      </div>
+      <div class="hh-char-badge">
+        <div class="hh-char-avatar"><img src="../images/jakub-vlcek.jpg" alt="Jakub Vlček"/></div>
+        <span class="hh-char-badge-name">Jakub Vlček</span>
+      </div>
+      <button class="hh-burger" id="burger" onclick="toggleMenu()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="hh-overlay" id="overlay" onclick="closeMenu()"></div>
+      <div class="hh-dropdown" id="menu-dropdown">
+        <div class="hh-menu-item" id="kap-toggle" onclick="toggleSub()"><span>Přehled kapitol</span><span class="arrow">›</span></div>
+        <div class="hh-submenu" id="kap-submenu">
+          <a class="hh-submenu-item " href="kap-01-betlemska-kaple.html"><span class="kap-num">01</span>Betlémská kaple</a>
+          <a class="hh-submenu-item " href="kap-02-cesta-do-kostnice.html"><span class="kap-num">02</span>Cesta do Kostnice</a>
+          <a class="hh-submenu-item " href="kap-03-prijezd-do-kostnice.html"><span class="kap-num">03</span>Příjezd do Kostnice</a>
+          <a class="hh-submenu-item current" href="kap-04-zatceni-husa.html"><span class="kap-num">04</span>Zatčení Husa</a>
+          <a class="hh-submenu-item locked" href="kap-05-soudni-stani.html"><span class="kap-num">05</span>Soudní stání</a>
+          <a class="hh-submenu-item locked" href="kap-06-navsteva-v-cele.html"><span class="kap-num">06</span>Návštěva v cele</a>
+          <a class="hh-submenu-item locked" href="kap-07-upaleni.html"><span class="kap-num">07</span>Upálení</a>
+          <a class="hh-submenu-item locked" href="kap-08-odjezd-z-kostnice.html"><span class="kap-num">08</span>Odjezd z Kostnice</a>
+          <a class="hh-submenu-item locked" href="kap-09-epilog.html"><span class="kap-num">09</span>Epilog</a>
+        </div>
+        <a class="hh-menu-item" href="../index.html"><span>Přehled všech dílů</span><span class="arrow">›</span></a>
+        <a class="hh-menu-item" href="../index.html?screen=postavy"><span>Výběr postavy</span><span class="arrow">›</span></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hh-chapter-header">
+    <p class="hh-chapter-num">Kapitola 4 &nbsp;·&nbsp; Větev C &nbsp;·&nbsp; Jakub Vlček</p>
+    <h1 class="hh-chapter-title">Zatčení Husa</h1>
+    <p class="hh-chapter-meta">Kostnice · 28. listopadu 1414</p>
+    <div class="hh-kap-rule"></div>
+  </div>
+
+  <div class="hh-choice-badge">
+    <span class="hh-choice-badge-letter">C</span>
+    <span class="hh-choice-badge-text"><!-- Doplň shrnutí volby C --></span>
+  </div>
+
+  <div class="hh-text" id="kap-text">
+    <!-- Sem vlož text větve C:
+    <p>Text odstavce.</p>
+    -->
+    <p>&nbsp;</p>
+  </div>
+
+  <div class="hh-chapter-end">
+    <div class="hh-end-rule"></div>
+    <p class="hh-end-label">Kapitola 4 dokončena</p>
+    <a class="hh-next-btn" href="kap-05-soudni-stani.html">Kapitola 5 &nbsp;→&nbsp; Soudní stání</a>
+  </div>
+
+</div>
+<script>
+  // ════ TÉMA (klíč: hh-theme) ════
+  function toggleTheme() {
+    const isLight = document.documentElement.classList.toggle('light');
+    document.body.classList.toggle('light', isLight);
+    localStorage.setItem('hh-theme', isLight ? 'light' : 'dark');
+    syncSwitch(isLight);
+  }
+  function syncSwitch(isLight) {
+    const k = document.querySelector('.hh-switch-knob');
+    if (k) k.style.transform = isLight ? 'translateX(16px)' : '';
+  }
+  // Inicializace – stav je už správný z <head>, jen synchronizuj switch
+  (function(){
+    const isLight = document.documentElement.classList.contains('light');
+    document.body.classList.toggle('light', isLight);
+    syncSwitch(isLight);
+  })();
+  const fsSizes = { small: '15px', medium: '18px', large: '22px' };
+  function setFs(size) {
+    document.getElementById('kap-text').style.setProperty('--fs', fsSizes[size]);
+    document.querySelectorAll('.hh-fs-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.hh-fs-btn.' + {small:'s',medium:'m',large:'l'}[size]).classList.add('active');
+    localStorage.setItem('hh-theme-fs', size);
+  }
+  if (localStorage.getItem('fs')) setFs(localStorage.getItem('fs'));
+  function toggleMenu() {
+    const open = document.getElementById('menu-dropdown').classList.toggle('open');
+    document.getElementById('burger').classList.toggle('open', open);
+    document.getElementById('overlay').classList.toggle('open', open);
+  }
+  function closeMenu() {
+    ['menu-dropdown','burger','overlay'].forEach(id => document.getElementById(id).classList.remove('open'));
+  }
+  function toggleSub() {
+    document.getElementById('kap-submenu').classList.toggle('open');
+    document.getElementById('kap-toggle').classList.toggle('sub-open');
+  }
+</script>
+</body>
+</html>
