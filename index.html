@@ -414,38 +414,44 @@
       <span>Chci zůstat v kontaktu</span><span class="arr">›</span>
     </div>
     <div class="hh-panel-content" id="kontakt-content">
-      <p>Hra vzniká postupně – nové díly, nové postavy, nový obsah. Pokud chceš vědět, kdy vyjde něco nového, nech nám svůj e-mail.</p>
-      <form name="newsletter" data-netlify="true" onsubmit="handleNewsletter(event)">
-        <input type="hidden" name="form-name" value="newsletter"/>
-        <input class="hh-nl-input" type="email" name="email" placeholder="Tvůj e-mail" required/>
-        <button class="hh-nl-btn" type="submit">Přihlásit k odběru</button>
-      </form>
-      <p class="hh-nl-ok" id="nl-ok">Díky! Ozveme se, až vyjde něco nového.</p>
-    </div>
-
-    <div class="hh-panel-item" id="komentar-toggle" onclick="toggleItem('komentar')">
-      <span>Zanechat komentář</span><span class="arr">›</span>
-    </div>
-    <div class="hh-panel-content" id="komentar-content">
-      <!-- Schválené komentáře – přidávej ručně níže -->
-      <div class="hh-comments-list" id="comments-list">
-        <p class="hh-comment-empty">Zatím žádné komentáře. Buď první!</p>
-        <!-- Příklad komentáře (odkomentuj a uprav):
-        <div class="hh-comment">
-          <div class="hh-comment-meta">Jan N. &nbsp;·&nbsp; červen 2026</div>
-          <p class="hh-comment-text">Text komentáře...</p>
-        </div>
-        -->
+      <p class="hh-nl-p">Hra vzniká postupně – nové díly, nové postavy, nový obsah. Pokud chceš vědět, kdy vyjde něco nového, nech nám svůj e-mail.</p>
+      <!-- Brevo newsletter formulář -->
+      <div id="sib-form-container" style="font-family:'Oswald',sans-serif;">
+        <form id="sib-form" method="POST"
+          action="https://b55dbd4d.sibforms.com/serve/MUIFAP3k6bd31cCgVW0SK3mwWrZRHQ30UHy9JUmqmrI0v0QtlW_7BRiBu8wAqwwS7E8XcpX-089CdPjeIVXd6QLM0xS-VxBEhuXPp9l0w8SDF7mQQHsuUtpl660xZ4t3OMoONKJj3VM7GntACbEjs9wyUeESneXWNS2UeyjrQUKcMX8VXGipNB3ma28geJNx7V_yhnnmzhThWmPS6Q=="
+          data-type="subscription">
+          <input class="hh-nl-input" type="email" name="EMAIL"
+            placeholder="Tvůj e-mail" required style="margin-bottom:10px;"/>
+          <input type="hidden" name="locale" value="cs"/>
+          <button class="hh-nl-btn" type="submit">Připojit se k výpravě</button>
+        </form>
+        <p class="hh-nl-ok" id="brevo-success" style="display:none;">
+          Odesláno. Potvrzovací e-mail dorazí za chvíli. Tentokrát bez latiny a bez čekání na glejt.
+        </p>
       </div>
-      <form name="komentar" data-netlify="true" onsubmit="handleKomentar(event)">
-        <input type="hidden" name="form-name" value="komentar"/>
-        <input class="hh-nl-input" type="text" name="jmeno" placeholder="Tvoje jméno (volitelné)" style="margin-bottom:8px;"/>
-        <textarea class="hh-nl-input" name="komentar" placeholder="Tvůj komentář..." required
-          style="height:90px;resize:vertical;display:block;font-family:'Lora',serif;"></textarea>
-        <button class="hh-nl-btn" type="submit" style="margin-top:8px;">Odeslat komentář</button>
-      </form>
-      <p class="hh-nl-ok" id="komentar-ok">Díky za komentář! Po schválení se zobrazí zde.</p>
-    </div>
+      <!-- Brevo required script -->
+      <script>
+        (function() {
+          var form = document.getElementById('sib-form');
+          if (!form) return;
+          form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var data = new FormData(form);
+            fetch(form.action, {
+              method: 'POST',
+              body: data,
+              mode: 'no-cors'
+            }).then(function() {
+              form.style.display = 'none';
+              document.getElementById('brevo-success').style.display = 'block';
+            }).catch(function() {
+              form.style.display = 'none';
+              document.getElementById('brevo-success').style.display = 'block';
+            });
+          });
+        })();
+      </script>
+      </div>
 
     <div class="hh-panel-item" onclick="goHome()">
       <span>Přehled dílů</span><span class="arr">›</span>
