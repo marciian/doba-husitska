@@ -140,7 +140,7 @@
 
   /* Volby */
   .hh-choices-wrap { padding: 2.4rem 2rem 0; max-width: 680px; }
-  .hh-choices-label { font-size: 10px; letter-spacing: 5px; color: var(--text-faint);
+  \1 14px; letter-spacing: 5px; color: var(--text-faint);
     text-transform: uppercase; margin-bottom: 1.2rem; }
   .hh-choices { display: flex; flex-direction: column; gap: 10px; }
   .hh-choice { display: flex; align-items: flex-start; gap: 16px; background: var(--bg-card);
@@ -150,7 +150,7 @@
   .hh-choice-letter { font-size: 18px; font-weight: 700; color: var(--text-faint);
     flex-shrink: 0; width: 24px; line-height: 1.5; transition: color 0.15s; }
   .hh-choice:hover .hh-choice-letter { color: var(--gold); }
-  .hh-choice-text { font-family: 'IM Fell English', serif; font-size: calc(var(--fs, 18px) * 0.9);
+  .hh-choice-text { font-family: 'IM Fell English', serif; font-size: var(--fs, 18px);
     color: var(--text-dim); line-height: 1.6; transition: color 0.15s; }
   .hh-choice:hover .hh-choice-text { color: var(--text-head); }
 
@@ -243,6 +243,9 @@
   html.light .hh-fs-btn.active { background: #8a6e18; color: #f4f0e6; }
   html.light .hh-fs-switch { background: #ddd5be; border-color: #c4b898; }
 
+
+  /* Nadpis nad volbami */
+  .hh-choices-label { font-size: 15px; letter-spacing: 3px; color: var(--text-faint); text-transform: uppercase; margin-bottom: 1.2rem; font-weight: 600; }
 </style>
 </head>
 <body>
@@ -265,9 +268,7 @@
         <button class="hh-fs-btn l" onclick="setFs('large')">A</button>
       </div>
       <div class="hh-char-badge">
-        <div class="hh-char-avatar">
-          <img src="../images/stepan-palec.jpg" alt="Štěpán Páleč"/>
-        </div>
+        <div class="hh-char-avatar"><img src="../images/stepan-palec.jpg" alt="Štěpán Páleč"/></div>
         <span class="hh-char-badge-name">Štěpán Páleč</span>
       </div>
       <button class="hh-burger" id="burger" onclick="toggleMenu()" aria-label="Menu">
@@ -275,90 +276,40 @@
       </button>
       <div class="hh-overlay" id="overlay" onclick="closeMenu()"></div>
       <div class="hh-dropdown" id="menu-dropdown">
-        <div class="hh-menu-item" id="kap-toggle" onclick="toggleSub()">
-          <span>Přehled kapitol</span><span class="arrow">›</span>
-        </div>
+        <div class="hh-menu-item" id="kap-toggle" onclick="toggleSub()"><span>Přehled kapitol</span><span class="arrow">›</span></div>
         <div class="hh-submenu" id="kap-submenu">
-          <!-- current = aktuální kapitola, locked = ještě nedostupná -->
           <a class="hh-submenu-item current" href="kap-01-betlemska-kaple.html"><span class="kap-num">1</span>Betlémská kaple</a>
-          <a class="hh-submenu-item locked" href="kap-02-cesta-do-kostnice.html"><span class="kap-num">2</span>Cesta do Kostnice</a>
-          <a class="hh-submenu-item locked" href="kap-03-prijezd-do-kostnice.html"><span class="kap-num">3</span>Příjezd do Kostnice</a>
-          <a class="hh-submenu-item locked" href="kap-04-zatceni-husa.html"><span class="kap-num">4</span>Zatčení Husa</a>
-          <a class="hh-submenu-item locked" href="kap-05-soudni-stani.html"><span class="kap-num">5</span>Soudní stání</a>
-          <a class="hh-submenu-item locked" href="kap-06-navsteva-v-cele.html"><span class="kap-num">6</span>Návštěva v cele</a>
-          <a class="hh-submenu-item locked" href="kap-07-upaleni.html"><span class="kap-num">7</span>Upálení</a>
-          <a class="hh-submenu-item locked" href="kap-08-odjezd-z-kostnice.html"><span class="kap-num">8</span>Odjezd z Kostnice</a>
-          <a class="hh-submenu-item locked" href="kap-09-epilog.html"><span class="kap-num">9</span>Epilog</a>
+          <a class="hh-submenu-item" href="kap-02-cesta-do-kostnice.html"><span class="kap-num">2</span>Cesta do Kostnice</a>
+          <a class="hh-submenu-item" href="kap-03-prijezd-do-kostnice.html"><span class="kap-num">3</span>Příjezd do Kostnice</a>
+          <a class="hh-submenu-item" href="kap-04-zatceni-husa.html"><span class="kap-num">4</span>Zatčení Husa</a>
+          <a class="hh-submenu-item" href="kap-04b-vezeni.html"><span class="kap-num">4b</span>Věznění</a>
+          <a class="hh-submenu-item" href="kap-05-soudni-stani.html"><span class="kap-num">5</span>Soudní stání</a>
+          <a class="hh-submenu-item" href="kap-06-navsteva-v-cele.html"><span class="kap-num">6</span>Návštěva v cele</a>
+          <a class="hh-submenu-item" href="kap-07-upaleni.html"><span class="kap-num">7</span>Upálení</a>
+          <a class="hh-submenu-item" href="kap-08-odjezd-do-polska.html"><span class="kap-num">8</span>Odjezd do Polska</a>
         </div>
         <a class="hh-menu-item" href="../index.html"><span>Přehled všech dílů</span><span class="arrow">›</span></a>
-        <a class="hh-menu-item" href="../index.html#postavy" onclick="sessionStorage.setItem('screen','postavy')"><span>Výběr postavy</span><span class="arrow">›</span></a>
+        <a class="hh-menu-item" href="../index.html?screen=postavy"><span>Výběr postavy</span><span class="arrow">›</span></a>
       </div>
     </div>
   </div>
 
-  <!-- ════════════════════════════════════════════
-       ZVUKOVÁ STOPA KAPITOLY
-       Nastav src níže na soubor v audio/
-       Např: ../audio/kap-01-palec.mp3
-       Nechej prázdné src="" pokud stopu nechceš
-       ════════════════════════════════════════════ -->
-  <audio id="kap-audio" preload="none">
-    <source src="../audio/kap-01-palec.mp3" type="audio/mpeg">   <!-- ← ZVUKOVÁ STOPA -->
-    <source src="../audio/kap-01-palec.ogg" type="audio/ogg">
-  </audio>
-
-  <!-- PŘEHRÁVAČ – zobrazí se jen pokud existuje audio soubor -->
-  <div class="hh-audio-bar" id="audio-bar" style="display:none;">
-    <button class="hh-audio-play" id="kap-play-btn" onclick="toggleAudio()" title="Přehrát / Pozastavit">▶</button>
-    <div class="hh-audio-info">
-      <div class="hh-audio-title">Kapitola 1 – Štěpán Páleč &nbsp;·&nbsp; Betlémská kaple</div>
-      <div class="hh-audio-progress" id="audio-progress" onclick="seekAudio(event)">
-        <div class="hh-audio-bar-fill" id="audio-fill"></div>
-      </div>
-    </div>
-    <span class="hh-audio-time" id="audio-time">0:00 / 0:00</span>
-    <div class="hh-audio-vol">
-      <span class="hh-audio-vol-icon" onclick="toggleMute()" id="vol-icon">♪</span>
-      <input class="hh-audio-vol-slider" type="range" min="0" max="1" step="0.05" value="0.7"
-        oninput="setVol(this.value)" title="Hlasitost"/>
-    </div>
-  </div>
-
-  <!-- OBRÁZEK KAPITOLY – plná šířka, 350px výška
-       Sem vlož obrázek: ../images/kap-1-palec.jpg (nebo libovolný název)
-       Přesuň pod text přidáním třídy .below na div.hh-chapter-image -->
-  <div class="hh-chapter-image">
-    <img src="../images/kap-1.jpg" alt="Betlémská kaple"/>
-    <span class="hh-chapter-image-caption">Betlémská kaple, Praha · léto 1412</span>
-  </div>
 
   <div class="hh-chapter-header">
     <p class="hh-chapter-num">Kapitola 1 &nbsp;·&nbsp; Štěpán Páleč</p>
     <h1 class="hh-chapter-title">Betlémská kaple</h1>
-    <p class="hh-chapter-meta">Praha &nbsp;·&nbsp; léto 1412</p>
+    <p class="hh-chapter-meta">Praha, podzim 1412</p>
     <div class="hh-kap-rule"></div>
   </div>
-
   <div class="hh-text" id="kap-text">
-    <p>Přišel jsem pozdě. Schválně.</p>
-    <p>Kaple byla nacpaná k prasknutí – odhadem tři tisíce lidí, možná víc. Řemeslníci, studenti, měšťané, pár šlechticů. Všichni zmáčknutí v prostoru kaple, rameno na rameni, v tom vedru jako sledi v sudu. Betlém nebyl kostel v pravém slova smyslu – žádný oltář, žádný presbytář, jen holé zdi a kazatelna. Místo postavené výhradně pro kázání. Pro Husovo kázání.</p>
-    <p>Protlačil jsem se dozadu ke zdi a zůstal stát ve stínu. Nechtěl jsem, aby mě Jan viděl. Nebo spíš – nechtěl jsem vidět jeho pohled, kdyby mne zahlédl.</p>
-    <p>„Bratři a sestry, říkám vám – kněz který žije v hříchu a prodává odpustky za zlaté, není knězem Božím. Je kupcem. A jeho rozhřešení nestojí za vindru."</p>
-    <p>Smích. Potlesk. Tři tisíce lidí se smálo církvi a tleskalo člověku, který ji právě veřejně urážel. A já jsem stál u zdi a přemýšlel, jestli mají pravdu.</p>
-    <p>Znal jsem ten hlas dvacet let. Studovali jsme spolu, hádali se o Viklefových tezích do půlnoci, smáli se nad špatným pivem v kolejních síních. Jan Hus byl můj přítel. Možná nejbližší přítel, jakého jsem kdy měl.</p>
-    <p>A já jsem ho právě zažaloval u arcibiskupa.</p>
-    <p>Zavřel jsem oči. Jan mluvil o tom, co jsem sám ještě nedávno hájil. Protože jsem měl strach.</p>
-    <p>„Jane," řekl jsem tiše, tak aby nikdo neslyšel. „Promiň mi."</p>
-    <p>Otočil jsem se a začal se protlačovat ke dveřím. Venku na mě čekal arcibiskupův písař se seznamem otázek, které jsem slíbil zodpovědět.</p>
+    <p>Přišel jsem pozdě. Schválně. Kaple byla nacpaná k prasknutí – odhadem tři tisíce lidí, možná víc. Řemeslníci, studenti, měšťané, pár šlechticů. Všichni zmáčknutí v prostoru kaple, rameno na rameni, v tom vedru jako sledi v sudu. Betlém, jak mu všichni říkali, nebyl kostel v pravém slova smyslu – žádný oltář, žádný presbytář, jen holé zdi a kazatelna. Místo postavené výhradně pro kázání. Pro Husovo kázání. Protlačil jsem se dozadu ke zdi a zůstal stát ve stínu. Nechtěl jsem, aby mě Jan viděl. Nebo spíš – nechtěl jsem vidět jeho pohled, kdyby mne zahlédl. Hlas ho prozradil dřív než jsem ho spatřil. „Bratři a sestry, říkám vám – kněz který žije v hříchu a prodává odpustky za zlaté, není knězem Božím. Je kupcem. A jeho rozhřešení nestojí za vindru." Smích. Potlesk. Tři tisíce lidí se smálo církvi a tleskalo člověku, který ji právě veřejně urážel. A já jsem stál u zdi a přemýšlel, jestli mají pravdu. Znal jsem ten hlas dvacet let. Studovali jsme spolu, hádali se o Viklefových tezích do půlnoci, smáli se nad špatným pivem v kolejních síních. Jan Hus byl můj přítel. Možná nejbližší přítel, jakého jsem kdy měl. A já jsem ho právě zažaloval u arcibiskupa. „Pravda není to, co říká papež. Pravda není to, co říká arcibiskup. Pravda je to, co říká Písmo – a to si může přečíst každý z vás, pokud umí číst. A pokud neumí, přijde sem a já mu jej přečtu." Znovu potlesk. Někdo za mnou vykřikl „Sláva mistru Husovi\!" a pět dalších hlasů mu přizvukovalo. Zavřel jsem oči. Jan mluvil o tom co jsem sám ještě nedávno hájil. Že autorita Písma je nadřazena autoritě papeže. Že kněz v hříchu ztrácí svou moc. Že církev se musí vrátit k chudobě a čistotě prvotních křesťanů. V tohle všechno jsem věřil. Všechno tohle jsem kázal. Pak přišla odpustková bula papeže Jana XXIII. Prodej odpuštění hříchů za peníze – na křížové tažení proti neapolskému králi. Jan proti ní kázal. Já jsem jako děkan teologické fakulty zakázal bakalářům ji kritizovat. Proč? Protože jsem byl v Boloni. Protože jsem seděl rok ve vězení jako kacíř a věděl jsem jak to dopadá s lidmi kteří jdou příliš daleko. Protože jsem měl strach. To si nikdy nahlas nepřiznám. Ale tady, v tomhle vedru, zmáčknutý mezi třemi tisíci lidmi kteří věřili slovům mého přítele – to jsem věděl. „Jane," řekl jsem tiše, tak aby nikdo neslyšel. „Promiň mi." Otočil jsem se a začal se protlačovat ke dveřím. Venku na mě čekal arcibiskupův písař se seznamem otázek které jsem slíbil zodpovědět.</p>
   </div>
-
-  <!-- VOLBY – každá vede na samostatný soubor větve -->
   <div class="hh-choices-wrap">
     <p class="hh-choices-label">Co uděláš?</p>
     <div class="hh-choices">
       <a class="hh-choice" href="kap-01-vetev-a.html">
         <span class="hh-choice-letter">A</span>
-        <span class="hh-choice-text">Zastavíš se. Počkáš, až kázání skončí, a promluvíš s Janem osobně.</span>
+        <span class="hh-choice-text">Zastavíš se. Počkáš až kázání skončí a promluvíš s Janem osobně.</span>
       </a>
       <a class="hh-choice" href="kap-01-vetev-b.html">
         <span class="hh-choice-letter">B</span>
@@ -371,117 +322,31 @@
     </div>
   </div>
 
+
+  <div class="hh-chapter-end">
+    <div class="hh-end-rule"></div>
+    <p class="hh-end-label">Kapitola dokončena</p>
+    <a class="hh-next-btn" href="kap-02-cesta-do-kostnice.html">Kapitola 2 &nbsp;→&nbsp; Cesta do Kostnice</a>
+  </div>
+
 </div>
 <script>
-  // Obnoví screen na výběr postavy při návratu na index
-  const prevScreen = sessionStorage.getItem('screen');
-  if (prevScreen) { sessionStorage.removeItem('screen'); }
+  // ════ TÉMA – CSS proměnné nastavené přes JS na :root ════
+  var DARK = {'--bg':'#0d0b08','--bg-bar':'#2a2418','--bg-card':'#131008','--bg-menu':'#1a1510','--border':'#1e1a10','--border-mid':'#3a3020','--gold':'#b8962e','--gold-dim':'#7a6840','--text-main':'#c8b890','--text-dim':'#8a7a5a','--text-faint':'#5a5030','--text-head':'#f0e6c8'};
+  var LIGHT = {'--bg':'#f4f0e6','--bg-bar':'#ddd5be','--bg-card':'#e8e0cc','--bg-menu':'#e0d8c4','--border':'#d4c9aa','--border-mid':'#c4b898','--gold':'#8a6e18','--gold-dim':'#a08830','--text-main':'#2a2010','--text-dim':'#5a4e30','--text-faint':'#8a7e60','--text-head':'#18120a'};
+  function applyTheme(isLight) { var root=document.documentElement; var vars=isLight?LIGHT:DARK; for(var k in vars)root.style.setProperty(k,vars[k]); root.style.background=vars['--bg']; document.body.style.background=vars['--bg']; root.classList.toggle('light',isLight); syncSwitch(isLight); }
+  function toggleTheme() { var isLight=!document.documentElement.classList.contains('light'); localStorage.setItem('hh-theme',isLight?'light':'dark'); applyTheme(isLight); }
+  function syncSwitch(isLight) { var k=document.querySelector('.hh-switch-knob'); if(k)k.style.transform=isLight?'translateX(16px)':''; }
+  (function initTheme(){ applyTheme(localStorage.getItem('hh-theme')==='light'); })();
 
+  // ════ VELIKOST TEXTU ════
+  var fsSizes={small:'15px',medium:'18px',large:'22px'};
+  function setFs(size){ document.body.style.setProperty('--fs',fsSizes[size]); document.querySelectorAll('.hh-fs-btn').forEach(function(b){b.classList.remove('active');}); var btn=document.querySelector('.hh-fs-btn.'+{small:'s',medium:'m',large:'l'}[size]); if(btn)btn.classList.add('active'); localStorage.setItem('hh-fs',size); }
+  (function(){ var s=localStorage.getItem('hh-fs')||'medium'; setFs(s); })();
 
-  // ════ TÉMA (klíč: hh-theme) ════
-  function toggleTheme() {
-    const isLight = document.documentElement.classList.toggle('light');
-    document.body.classList.toggle('light', isLight);
-    localStorage.setItem('hh-theme', isLight ? 'light' : 'dark');
-    syncSwitch(isLight);
-  }
-  function syncSwitch(isLight) {
-    const k = document.querySelector('.hh-switch-knob');
-    if (k) k.style.transform = isLight ? 'translateX(16px)' : '';
-  }
-  // Inicializace – stav je už správný z <head>, jen synchronizuj switch
-  (function(){
-    const isLight = document.documentElement.classList.contains('light');
-    document.body.classList.toggle('light', isLight);
-    syncSwitch(isLight);
-  })();
-
-
-  const fsSizes = { small: '15px', medium: '18px', large: '22px' };
-  function setFs(size) {
-    document.getElementById('kap-text').style.setProperty('--fs', fsSizes[size]);
-    document.querySelectorAll('.hh-fs-btn').forEach(b => b.classList.remove('active'));
-    document.querySelector('.hh-fs-btn.' + {small:'s',medium:'m',large:'l'}[size]).classList.add('active');
-    localStorage.setItem('hh-theme-fs', size);
-  }
-  if (localStorage.getItem('fs')) setFs(localStorage.getItem('fs'));
-
-  function toggleMenu() {
-    const open = document.getElementById('menu-dropdown').classList.toggle('open');
-    document.getElementById('burger').classList.toggle('open', open);
-    document.getElementById('overlay').classList.toggle('open', open);
-  }
-  function closeMenu() {
-    ['menu-dropdown','burger','overlay'].forEach(id => document.getElementById(id).classList.remove('open'));
-  }
-  function toggleSub() {
-    document.getElementById('kap-submenu').classList.toggle('open');
-    document.getElementById('kap-toggle').classList.toggle('sub-open');
-  }
-
-  // ── AUDIO PŘEHRÁVAČ KAPITOLY ──
-  const kapAudio = document.getElementById('kap-audio');
-  const kapBtn   = document.getElementById('kap-play-btn');
-  const audioBar = document.getElementById('audio-bar');
-  const fill     = document.getElementById('audio-fill');
-  const timeEl   = document.getElementById('audio-time');
-  let muted = false;
-
-  // Zobraz přehrávač jen pokud se audio načte
-  kapAudio.addEventListener('canplay', () => { audioBar.style.display = 'flex'; });
-  kapAudio.addEventListener('error',   () => { audioBar.style.display = 'none'; });
-
-  function toggleAudio() {
-    if (kapAudio.paused) {
-      kapAudio.play();
-      kapBtn.textContent = '⏸';
-      kapBtn.classList.add('playing');
-    } else {
-      kapAudio.pause();
-      kapBtn.textContent = '▶';
-      kapBtn.classList.remove('playing');
-    }
-  }
-
-  function fmtTime(s) {
-    const m = Math.floor(s / 60);
-    return m + ':' + String(Math.floor(s % 60)).padStart(2, '0');
-  }
-
-  kapAudio.addEventListener('timeupdate', () => {
-    if (!kapAudio.duration) return;
-    const pct = (kapAudio.currentTime / kapAudio.duration) * 100;
-    fill.style.width = pct + '%';
-    fill.style.transition = 'none';
-    timeEl.textContent = fmtTime(kapAudio.currentTime) + ' / ' + fmtTime(kapAudio.duration);
-  });
-
-  kapAudio.addEventListener('ended', () => {
-    kapBtn.textContent = '▶';
-    kapBtn.classList.remove('playing');
-    fill.style.width = '0%';
-  });
-
-  function seekAudio(e) {
-    if (!kapAudio.duration) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    kapAudio.currentTime = ((e.clientX - rect.left) / rect.width) * kapAudio.duration;
-  }
-
-  function setVol(v) {
-    kapAudio.volume = v;
-    muted = v == 0;
-    document.getElementById('vol-icon').textContent = muted ? '♭' : '♪';
-  }
-
-  function toggleMute() {
-    muted = !muted;
-    kapAudio.muted = muted;
-    document.getElementById('vol-icon').textContent = muted ? '♭' : '♪';
-  }
-
-  kapAudio.volume = 0.7;
-
+  function toggleMenu(){ var open=document.getElementById('menu-dropdown').classList.toggle('open'); document.getElementById('burger').classList.toggle('open',open); document.getElementById('overlay').classList.toggle('open',open); }
+  function closeMenu(){ ['menu-dropdown','burger','overlay'].forEach(function(id){document.getElementById(id).classList.remove('open');}); }
+  function toggleSub(){ document.getElementById('kap-submenu').classList.toggle('open'); document.getElementById('kap-toggle').classList.toggle('sub-open'); }
 </script>
 </body>
 </html>
