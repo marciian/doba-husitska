@@ -3,8 +3,18 @@
 <head>
 <script>
   (function(){
-    if(localStorage.getItem('hh-theme')==='light'){
-      document.documentElement.classList.add('light');
+    var isLight = localStorage.getItem('hh-theme') === 'light';
+    var LIGHT = {
+      '--bg':'#f4f0e6','--bg-bar':'#ddd5be','--bg-card':'#e8e0cc',
+      '--bg-menu':'#e0d8c4','--border':'#d4c9aa','--border-mid':'#c4b898',
+      '--gold':'#8a6e18','--gold-dim':'#a08830','--text-main':'#2a2010',
+      '--text-dim':'#5a4e30','--text-faint':'#8a7e60','--text-head':'#18120a'
+    };
+    if (isLight) {
+      var r = document.documentElement;
+      for (var k in LIGHT) r.style.setProperty(k, LIGHT[k]);
+      r.style.background = LIGHT['--bg'];
+      r.classList.add('light');
     }
   })();
 </script>
@@ -102,7 +112,7 @@
     border-radius: 2px; text-align: center; }
   .hh-placeholder p { font-family: 'IM Fell English', serif; font-size: 16px; color: var(--text-faint); font-style: italic; }
   .hh-choices-wrap { padding: 2.4rem 2rem 0; max-width: 680px; }
-  .hh-choices-label { font-size: 10px; letter-spacing: 5px; color: var(--text-faint); text-transform: uppercase; margin-bottom: 1.2rem; }
+  \1 14px; letter-spacing: 5px; color: var(--text-faint); text-transform: uppercase; margin-bottom: 1.2rem; }
   .hh-choices { display: flex; flex-direction: column; gap: 10px; }
   .hh-choice { display: flex; align-items: flex-start; gap: 16px; background: var(--bg-card);
     border: 1px solid var(--border); padding: 16px 20px; cursor: pointer;
@@ -111,7 +121,7 @@
   .hh-choice-letter { font-size: 18px; font-weight: 700; color: var(--text-faint);
     flex-shrink: 0; width: 24px; line-height: 1.5; transition: color 0.15s; }
   .hh-choice:hover .hh-choice-letter { color: var(--gold); }
-  .hh-choice-text { font-family: 'IM Fell English', serif; font-size: calc(var(--fs, 18px) * 0.9); color: var(--text-dim); line-height: 1.6; transition: color 0.15s; }
+  .hh-choice-text { font-family: 'IM Fell English', serif; font-size: var(--fs, 18px); color: var(--text-dim); line-height: 1.6; transition: color 0.15s; }
   .hh-choice:hover .hh-choice-text { color: var(--text-head); }
   .hh-chapter-end { padding: 2.4rem 2rem 0; max-width: 680px; }
   .hh-end-rule { width: 100%; height: 1px; background: linear-gradient(90deg, var(--border-mid), transparent); margin-bottom: 2rem; }
@@ -164,6 +174,9 @@
   html.light .hh-fs-btn.active { background: #8a6e18; color: #f4f0e6; }
   html.light .hh-fs-switch { background: #ddd5be; border-color: #c4b898; }
 
+
+  /* Nadpis nad volbami */
+  .hh-choices-label { font-size: 15px; letter-spacing: 3px; color: var(--text-faint); text-transform: uppercase; margin-bottom: 1.2rem; font-weight: 600; }
 </style>
 </head>
 <body>
@@ -259,31 +272,57 @@
 
 </div>
 <script>
-  // ════ TÉMA (klíč: hh-theme) ════
-  function toggleTheme() {
-    const isLight = document.documentElement.classList.toggle('light');
-    document.body.classList.toggle('light', isLight);
-    localStorage.setItem('hh-theme', isLight ? 'light' : 'dark');
+  // ════ TÉMA – CSS proměnné nastavené přes JS na :root ════
+  // Nejspolehlivější přístup: funguje Chrome, Firefox, Edge, Safari
+  // Obchází CSS kaskádu, žádné problémy se specificitou
+
+  var DARK = {
+    '--bg':'#0d0b08','--bg-bar':'#2a2418','--bg-card':'#131008',
+    '--bg-menu':'#1a1510','--border':'#1e1a10','--border-mid':'#3a3020',
+    '--gold':'#b8962e','--gold-dim':'#7a6840','--text-main':'#c8b890',
+    '--text-dim':'#8a7a5a','--text-faint':'#5a5030','--text-head':'#f0e6c8'
+  };
+  var LIGHT = {
+    '--bg':'#f4f0e6','--bg-bar':'#ddd5be','--bg-card':'#e8e0cc',
+    '--bg-menu':'#e0d8c4','--border':'#d4c9aa','--border-mid':'#c4b898',
+    '--gold':'#8a6e18','--gold-dim':'#a08830','--text-main':'#2a2010',
+    '--text-dim':'#5a4e30','--text-faint':'#8a7e60','--text-head':'#18120a'
+  };
+
+  function applyTheme(isLight) {
+    var root = document.documentElement;
+    var vars = isLight ? LIGHT : DARK;
+    for (var k in vars) root.style.setProperty(k, vars[k]);
+    root.style.background = vars['--bg'];
+    document.body.style.background = vars['--bg'];
+    // Třída pro pomocné CSS selektory (ikony, switche...)
+    root.classList.toggle('light', isLight);
     syncSwitch(isLight);
   }
+
+  function toggleTheme() {
+    var isLight = !document.documentElement.classList.contains('light');
+    localStorage.setItem('hh-theme', isLight ? 'light' : 'dark');
+    applyTheme(isLight);
+  }
+
   function syncSwitch(isLight) {
-    const k = document.querySelector('.hh-switch-knob');
+    var k = document.querySelector('.hh-switch-knob');
     if (k) k.style.transform = isLight ? 'translateX(16px)' : '';
   }
-  // Inicializace – stav je už správný z <head>, jen synchronizuj switch
-  (function(){
-    const isLight = document.documentElement.classList.contains('light');
-    document.body.classList.toggle('light', isLight);
-    syncSwitch(isLight);
+
+  (function initTheme() {
+    var isLight = localStorage.getItem('hh-theme') === 'light';
+    applyTheme(isLight);
   })();
   const fsSizes = { small: '15px', medium: '18px', large: '22px' };
   function setFs(size) {
-    document.getElementById('kap-text').style.setProperty('--fs', fsSizes[size]);
+    document.body.style.setProperty('--fs', fsSizes[size]);
     document.querySelectorAll('.hh-fs-btn').forEach(b => b.classList.remove('active'));
     document.querySelector('.hh-fs-btn.' + {small:'s',medium:'m',large:'l'}[size]).classList.add('active');
-    localStorage.setItem('hh-theme-fs', size);
+    localStorage.setItem('hh-fs', size);
   }
-  if (localStorage.getItem('fs')) setFs(localStorage.getItem('fs'));
+  (function(){ var s=localStorage.getItem('hh-fs')||'medium'; setFs(s); })();
   function toggleMenu() {
     const open = document.getElementById('menu-dropdown').classList.toggle('open');
     document.getElementById('burger').classList.toggle('open', open);

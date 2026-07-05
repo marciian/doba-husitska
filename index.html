@@ -2,13 +2,6 @@
 <html lang="cs">
 <head>
 <script>
-  (function(){
-    if(localStorage.getItem('hh-theme')==='light'){
-      document.documentElement.classList.add('light');
-    }
-  })();
-</script>
-<script>
   // Aplikuj téma okamžitě – musí být v <head> před vykreslením
   (function() {
     if (localStorage.getItem('hh-theme') === 'light') {
@@ -149,25 +142,6 @@
 
 
 
-  /* ════ SVĚTLÝ REŽIM – aplikuje se přes html.light ════
-     Head script přidá třídu na <html> okamžitě před vykreslením.
-     Funguje v Chrome, Firefox, Edge, Safari. */
-  html.light,
-  html.light body { background: #f4f0e6; }
-  html.light body {
-    --bg: #f4f0e6; --bg-bar: #ddd5be; --bg-card: #e8e0cc; --bg-menu: #e0d8c4;
-    --border: #d4c9aa; --border-mid: #c4b898; --gold: #8a6e18; --gold-dim: #a08830;
-    --text-main: #2a2010; --text-dim: #5a4e30; --text-faint: #8a7e60; --text-head: #18120a;
-  }
-  html.light .hh-theme-icon { color: #7a6840; }
-  html.light .hh-switch-track { background: #d4c9aa; border-color: #c4b898; }
-  html.light .hh-burger { border-color: #c4b898; }
-  html.light .hh-burger span { background: #7a6840; }
-  html.light .hh-chapter-image img { filter: contrast(1.05) saturate(0.7) brightness(0.9); }
-  html.light .hh-fs-btn { color: #5a4830; }
-  html.light .hh-fs-btn:hover { color: #8a6e18; }
-  html.light .hh-fs-btn.active { background: #8a6e18; color: #f4f0e6; }
-  html.light .hh-fs-switch { background: #ddd5be; border-color: #c4b898; }
 
 </style>
 </head>
@@ -378,6 +352,11 @@
 
 </div>
 <script>
+  // Index je vždy tmavý – odeber light třídu z html (nemění uloženou volbu)
+  document.documentElement.classList.remove('light');
+  document.documentElement.style.removeProperty('--bg');
+  document.documentElement.style.removeProperty('--bg-bar');
+
   function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');

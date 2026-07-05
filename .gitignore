@@ -1,1 +1,14 @@
-.claude/
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Editor soubory
+.vscode/
+*.swp
+
+# Dočasné soubory
+*.tmp
+*.bak
