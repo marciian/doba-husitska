@@ -453,6 +453,29 @@
       </script>
       </div>
 
+    <div class="hh-panel-item" id="komentar-toggle" onclick="toggleItem('komentar')">
+      <span>Zanechat komentář</span><span class="arr">›</span>
+    </div>
+    <div class="hh-panel-content" id="komentar-content">
+      <div class="hh-comments-list" id="comments-list">
+        <p class="hh-comment-empty">Zatím žádné komentáře. Buď první!</p>
+        <!-- Příklad komentáře – odkomentuj a uprav:
+        <div class="hh-comment">
+          <div class="hh-comment-meta">Jan N. &nbsp;·&nbsp; červen 2026</div>
+          <p class="hh-comment-text">Text komentáře...</p>
+        </div>
+        -->
+      </div>
+      <form name="komentar" data-netlify="true" onsubmit="handleKomentar(event)">
+        <input type="hidden" name="form-name" value="komentar"/>
+        <input class="hh-nl-input" type="text" name="jmeno" placeholder="Tvoje jméno (volitelné)" style="margin-bottom:8px;"/>
+        <textarea class="hh-nl-input" name="komentar" placeholder="Tvůj komentář..." required
+          style="height:90px;resize:vertical;display:block;width:100%;font-family:'Lora',serif;"></textarea>
+        <button class="hh-nl-btn" type="submit" style="margin-top:8px;">Odeslat komentář</button>
+      </form>
+      <p class="hh-nl-ok" id="komentar-ok" style="display:none;">Díky za komentář! Po schválení se zobrazí zde.</p>
+    </div>
+
     <div class="hh-panel-item" onclick="goHome()">
       <span>Přehled dílů</span><span class="arr">›</span>
     </div>
