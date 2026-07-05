@@ -17,6 +17,110 @@
       r.classList.add('light');
     }
   })();
+
+  // ══ AUDIO PŘEHRÁVAČ KAPITOLY ══
+  var kapAudio = document.getElementById('kap-audio');
+  var audioBar = document.getElementById('audio-bar');
+  var playBtn  = document.getElementById('kap-play-btn');
+  var muteBtn  = document.getElementById('kap-mute-btn');
+  var fill     = document.getElementById('audio-fill');
+  var timeEl   = document.getElementById('audio-time');
+  var volSl    = document.getElementById('vol-slider');
+
+  // Zjisti cestu k audio souboru z URL stránky
+  // /palec/kap-01-betlemska-kaple.html → audio/kap-01-palec.mp3
+  (function setupAudio() {
+    var path = window.location.pathname;
+    var match = path.match(/\/(palec|petr|vaclav|jakub)\/kap-(\d+[ab]?)/);
+    if (!match) return;
+    var postava = match[1];
+    var num = match[2];
+    var src = '../audio/kap-' + num + '-' + postava + '.mp3';
+    kapAudio.src = src;
+
+    // Zkontroluj zda soubor existuje
+    var xhr = new XMLHttpRequest();
+    xhr.open('HEAD', src, true);
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        audioBar.classList.add('visible');
+        // Načti uložené preference
+        var isMuted = localStorage.getItem('hh-audio-muted') === '1';
+        var vol = parseFloat(localStorage.getItem('hh-audio-vol') || '0.8');
+        kapAudio.muted = isMuted;
+        kapAudio.volume = vol;
+        volSl.value = vol;
+        muteBtn.textContent = isMuted ? '🔇' : '🔊';
+        // Automatické spuštění pokud není ztlumeno
+        if (!isMuted) {
+          kapAudio.play().catch(function(){});
+          playBtn.textContent = '⏸';
+          playBtn.classList.add('active');
+        }
+      }
+    };
+    xhr.onerror = function() {}; // soubor neexistuje, bar zůstane skrytý
+    xhr.send();
+  })();
+
+  function toggleKapAudio() {
+    if (kapAudio.paused) {
+      kapAudio.play();
+      playBtn.textContent = '⏸';
+      playBtn.classList.add('active');
+    } else {
+      kapAudio.pause();
+      playBtn.textContent = '▶';
+      playBtn.classList.remove('active');
+    }
+  }
+
+  function toggleMute() {
+    var isMuted = !kapAudio.muted;
+    kapAudio.muted = isMuted;
+    muteBtn.textContent = isMuted ? '🔇' : '🔊';
+    localStorage.setItem('hh-audio-muted', isMuted ? '1' : '0');
+    if (isMuted) {
+      // Při ztlumení také pozastav
+      kapAudio.pause();
+      playBtn.textContent = '▶';
+      playBtn.classList.remove('active');
+    } else {
+      // Při zapnutí znovu spusť
+      kapAudio.play().catch(function(){});
+      playBtn.textContent = '⏸';
+      playBtn.classList.add('active');
+    }
+  }
+
+  function setKapVol(v) {
+    kapAudio.volume = parseFloat(v);
+    localStorage.setItem('hh-audio-vol', v);
+  }
+
+  function seekAudio(e) {
+    if (!kapAudio.duration) return;
+    var rect = e.currentTarget.getBoundingClientRect();
+    kapAudio.currentTime = ((e.clientX - rect.left) / rect.width) * kapAudio.duration;
+  }
+
+  function fmtTime(s) {
+    var m = Math.floor(s / 60);
+    return m + ':' + String(Math.floor(s % 60)).padStart(2, '0');
+  }
+
+  kapAudio.addEventListener('timeupdate', function() {
+    if (!kapAudio.duration) return;
+    fill.style.width = (kapAudio.currentTime / kapAudio.duration * 100) + '%';
+    timeEl.textContent = fmtTime(kapAudio.currentTime) + ' / ' + fmtTime(kapAudio.duration);
+  });
+
+  kapAudio.addEventListener('ended', function() {
+    playBtn.textContent = '▶';
+    playBtn.classList.remove('active');
+    fill.style.width = '0%';
+  });
+
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -174,6 +278,96 @@
   html.light .hh-fs-btn.active { background: #8a6e18; color: #f4f0e6; }
   html.light .hh-fs-switch { background: #ddd5be; border-color: #c4b898; }
 
+
+  /* ══ AUDIO BAR KAPITOLY ══ */
+  .hh-audio-bar {
+    display: none; /* Skryje se pokud audio neexistuje */
+    align-items: center;
+    gap: 10px;
+    padding: 0.8rem 2rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-bar);
+    transition: background 0.3s;
+  }
+  .hh-audio-bar.visible { display: flex; }
+  .hh-audio-btn {
+    background: none;
+    border: 1px solid var(--border-mid);
+    color: var(--gold-dim);
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 11px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .hh-audio-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .hh-audio-btn.active { border-color: var(--gold); color: var(--gold); }
+  .hh-audio-progress-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+  }
+  .hh-audio-title {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .hh-audio-progress {
+    width: 100%; height: 2px;
+    background: var(--border);
+    border-radius: 1px;
+    cursor: pointer;
+    position: relative;
+  }
+  .hh-audio-fill {
+    height: 100%;
+    background: var(--gold);
+    border-radius: 1px;
+    width: 0%;
+    transition: none;
+    pointer-events: none;
+  }
+  .hh-audio-time {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--text-faint);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .hh-audio-vol-wrap { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+  .hh-vol-sl {
+    -webkit-appearance: none;
+    width: 55px; height: 2px;
+    background: var(--border);
+    border-radius: 1px;
+    outline: none;
+    cursor: pointer;
+  }
+  .hh-vol-sl::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--gold);
+    cursor: pointer;
+  }
+  @media (max-width: 720px) {
+    .hh-audio-bar { padding: 0.7rem 1.2rem; gap: 6px; }
+    .hh-vol-sl { width: 40px; }
+    .hh-audio-time { display: none; }
+  }
+  @media (max-width: 480px) {
+    .hh-audio-vol-wrap { display: none; }
+  }
+
 </style>
 </head>
 <body>
@@ -221,6 +415,25 @@
       </div>
     </div>
   </div>
+  <!-- ══ AUDIO PŘEHRÁVAČ ══ -->
+  <audio id="kap-audio" preload="none"></audio>
+  <div class="hh-audio-bar" id="audio-bar">
+    <button class="hh-audio-btn" id="kap-play-btn" onclick="toggleKapAudio()" title="Přehrát / Pozastavit">▶</button>
+    <button class="hh-audio-btn" id="kap-mute-btn" onclick="toggleMute()" title="Ztlumit / Zapnout zvuk">🔊</button>
+    <div class="hh-audio-progress-wrap">
+      <div class="hh-audio-title" id="audio-title">Nahrávka kapitoly</div>
+      <div class="hh-audio-progress" id="audio-progress" onclick="seekAudio(event)">
+        <div class="hh-audio-fill" id="audio-fill"></div>
+      </div>
+    </div>
+    <span class="hh-audio-time" id="audio-time">0:00</span>
+    <div class="hh-audio-vol-wrap">
+      <span style="font-size:11px;color:var(--gold-dim)">♪</span>
+      <input class="hh-vol-sl" type="range" min="0" max="1" step="0.05" value="0.8"
+        oninput="setKapVol(this.value)" id="vol-slider"/>
+    </div>
+  </div>
+
 
   <div class="hh-chapter-header">
     <p class="hh-chapter-num">Kapitola 1 &nbsp;·&nbsp; Větev A &nbsp;·&nbsp; Jakub Vlček</p>

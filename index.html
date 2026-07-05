@@ -2,10 +2,9 @@
 <html lang="cs">
 <head>
 <script>
-  // Aplikuj téma okamžitě – musí být v <head> před vykreslením
-  (function() {
-    if (localStorage.getItem('hh-theme') === 'light') {
-      document.documentElement.classList.add('light-pending');
+  (function(){
+    if(localStorage.getItem('hh-theme')==='light'){
+      document.documentElement.classList.add('light');
     }
   })();
 </script>
@@ -13,39 +12,147 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Husité – Interaktivní gamebook</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Lora:ital@0;1&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Lora:ital@1&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { background: #0a0805; min-height: 100%; }
 
+  /* ══ SCREENS ══ */
   .hh { background: #0d0b08; font-family: 'Oswald', sans-serif; color: #e0d5bc;
     max-width: 960px; margin: 0 auto; padding-bottom: 3rem; min-height: 100vh; }
   .screen { display: none; }
   .screen.active { display: block; }
 
-  /* HEADER */
+  /* ══ GLOBAL TOPBAR ══ */
+  .hh-topbar-wrap {
+    background: #080604;
+    border-bottom: 1px solid #1e1a10;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .hh-topbar-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .hh-burger {
+    display: flex; flex-direction: column; justify-content: center; gap: 5px;
+    width: 38px; height: 38px; cursor: pointer; background: none;
+    border: 1px solid #2e2818; border-radius: 2px; padding: 8px;
+    transition: border-color 0.15s; flex-shrink: 0;
+  }
+  .hh-burger:hover, .hh-burger.open { border-color: #b8962e; }
+  .hh-burger span { display: block; height: 1.5px; background: #c8a84a; border-radius: 1px; }
+  .hh-burger:hover span, .hh-burger.open span { background: #b8962e; }
+
+  .hh-audio-ctrl { display: flex; align-items: center; gap: 8px; }
+  .hh-audio-play {
+    background: none; border: 1px solid #2e2818; color: #7a6840;
+    width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
+    font-size: 11px; display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s; font-family: inherit; flex-shrink: 0;
+  }
+  .hh-audio-play:hover, .hh-audio-play.playing { border-color: #b8962e; color: #b8962e; }
+  .hh-vol-icon { font-size: 11px; color: #4a4020; }
+  .hh-vol-slider {
+    -webkit-appearance: none; width: 55px; height: 2px;
+    background: #2a2418; border-radius: 1px; outline: none; cursor: pointer;
+  }
+  .hh-vol-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 10px; height: 10px;
+    border-radius: 50%; background: #b8962e; cursor: pointer;
+  }
+
+  /* ══ SIDE PANEL ══ */
+  .hh-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6); z-index: 300;
+  }
+  .hh-overlay.open { display: block; }
+  .hh-panel {
+    position: fixed; top: 0; left: 0;
+    width: min(340px, 85vw); height: 100vh;
+    background: #100e0a; border-right: 1px solid #2e2818;
+    z-index: 400;
+    transform: translateX(-100%);
+    transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .hh-panel.open { transform: translateX(0); }
+  .hh-panel-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.4rem; height: 54px; border-bottom: 1px solid #1e1a10; flex-shrink: 0;
+  }
+  .hh-panel-title { font-size: 11px; letter-spacing: 5px; color: #5a5030; text-transform: uppercase; }
+  .hh-panel-close {
+    background: none; border: none; color: #5a5030; font-size: 22px;
+    cursor: pointer; padding: 4px 8px; line-height: 1; transition: color 0.15s;
+  }
+  .hh-panel-close:hover { color: #b8962e; }
+  .hh-panel-nav { flex: 1; overflow-y: auto; }
+  .hh-panel-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 15px 1.4rem; font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+    color: #8a7a5a; cursor: pointer; border-bottom: 1px solid #1a1510;
+    transition: background 0.12s, color 0.12s; user-select: none;
+  }
+  .hh-panel-item:hover { background: #161209; color: #b8962e; }
+  .hh-panel-item .arr { font-size: 12px; color: #3a3020; transition: transform 0.2s; }
+  .hh-panel-item.sub-open .arr { transform: rotate(90deg); }
+  .hh-panel-content {
+    display: none; padding: 1.2rem 1.4rem 1.4rem;
+    border-bottom: 1px solid #1a1510; background: #0d0b08;
+  }
+  .hh-panel-content.open { display: block; }
+  .hh-panel-content p {
+    font-family: 'Lora', serif; font-size: 14px; line-height: 1.8;
+    color: #7a6a50; margin-bottom: 1em; font-style: italic;
+  }
+  .hh-panel-content p:last-child { margin-bottom: 0; }
+  .hh-panel-content h3 {
+    font-size: 10px; letter-spacing: 4px; color: #b8962e;
+    text-transform: uppercase; margin: 1.2rem 0 0.6rem; font-style: normal;
+  }
+  /* Newsletter */
+  .hh-nl-p {
+    font-family: 'Lora', serif; font-size: 14px; line-height: 1.7;
+    color: #7a6a50; margin-bottom: 1rem; font-style: italic;
+  }
+  .hh-nl-input {
+    width: 100%; background: #131008; border: 1px solid #2e2818; color: #c8b890;
+    font-family: 'Oswald', sans-serif; font-size: 13px; letter-spacing: 1px;
+    padding: 10px 14px; outline: none; transition: border-color 0.15s;
+    margin-bottom: 10px;
+  }
+  .hh-nl-input:focus { border-color: #b8962e; }
+  .hh-nl-input::placeholder { color: #3a3020; }
+  .hh-nl-btn {
+    width: 100%; background: transparent; border: 1px solid #b8962e; color: #b8962e;
+    font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 600;
+    letter-spacing: 4px; text-transform: uppercase; padding: 10px;
+    cursor: pointer; transition: all 0.18s;
+  }
+  .hh-nl-btn:hover { background: #b8962e; color: #0d0b08; }
+  .hh-nl-ok { display: none; font-family: 'Lora', serif; font-size: 13px; color: #6a9a6a; font-style: italic; text-align: center; padding: 8px 0; }
+
+  /* ══ SCREEN 1 – HEADER ══ */
   .hh-header { text-align: center; padding: 2.8rem 1.5rem 0; }
   .hh-eyebrow { font-size: 16px; letter-spacing: 7px; color: #b8962e; text-transform: uppercase; margin-bottom: 10px; }
   .hh-logo { font-size: 96px; font-weight: 700; letter-spacing: 10px; text-transform: uppercase; color: #f0e6c8; line-height: 1; }
   .hh-rule { width: 110px; height: 1px; background: linear-gradient(90deg, transparent, #b8962e, transparent); margin: 1.3rem auto 0; }
+
+  /* Úvod */
+  .hh-intro { max-width: 720px; margin: 2rem auto 0; padding: 0 2rem; }
+  .hh-intro-text { font-family: 'Lora', serif; font-size: 16px; line-height: 1.9; color: #7a6a50; font-style: italic; }
+  .hh-intro-rule { width: 80px; height: 1px; background: linear-gradient(90deg, transparent, #b8962e, transparent); margin: 1.8rem auto 0; }
+
   .hh-section-label { font-size: 18px; letter-spacing: 5px; color: #5a5030; text-transform: uppercase; text-align: center; margin: 1.5rem 0 1.4rem; }
 
-  /* PŘEHRÁVAČ MENU */
-  .hh-player { display: flex; align-items: center; justify-content: center; gap: 12px;
-    padding: 1rem 2rem 0; }
-  .hh-player-btn { background: none; border: 1px solid #2e2818; color: #7a6840;
-    width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 11px;
-    display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; }
-  .hh-player-btn:hover { border-color: #b8962e; color: #b8962e; }
-  .hh-player-btn.playing { border-color: #b8962e; color: #b8962e; }
-  .hh-player-track { font-size: 15px; letter-spacing: 3px; color: #3a3020; text-transform: uppercase; }
-  .hh-player-vol { display: flex; align-items: center; gap: 6px; }
-  .hh-player-vol-icon { font-size: 16px; color: #3a3020; }
-  .hh-vol-slider { -webkit-appearance: none; width: 60px; height: 2px; background: #2a2418;
-    border-radius: 1px; outline: none; cursor: pointer; }
-  .hh-vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 10px; height: 10px;
-    border-radius: 50%; background: #b8962e; cursor: pointer; }
-
-  /* GRID DÍLŮ */
+  /* ══ GRID DÍLŮ ══ */
   .hh-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
     background: #1e1a10; border-top: 1px solid #1e1a10; border-bottom: 1px solid #1e1a10;
     margin: 0 2rem; border-radius: 4px; overflow: hidden; }
@@ -72,11 +179,11 @@
   .hh-dil.available .hh-dil-title { color: #d8c898; }
   .hh-dil-year { font-size: 16px; letter-spacing: 2px; color: #3a3020; margin-top: 4px; }
   .hh-dil.available .hh-dil-year { color: #7a6840; }
-  .hh-dil-arrow { position: absolute; right: 10px; bottom: 10px; font-size: 21px;
+  .hh-dil-arrow { position: absolute; right: 10px; bottom: 10px; font-size: 28px;
     color: #b8962e; opacity: 0; transition: opacity 0.15s; }
   .hh-dil.available:hover .hh-dil-arrow { opacity: 1; }
 
-  /* POSTAVY */
+  /* ══ SCREEN 2 – POSTAVY ══ */
   .hh-s2-header { text-align: center; padding: 2.4rem 1.5rem 0; }
   .hh-s2-logo { font-size: 27px; font-weight: 600; letter-spacing: 7px; text-transform: uppercase; color: #5a4e28; }
   .hh-s2-period { font-size: 16px; letter-spacing: 4px; color: #5a5030; text-transform: uppercase; margin: 10px 0 6px; }
@@ -86,6 +193,12 @@
     box-shadow: 0 0 0 4px #1e1a10, 0 0 0 5px #b8962e44; }
   .hh-hus-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: center 10%;
     filter: contrast(1.08) saturate(0.6) brightness(0.88); }
+
+  /* Intro dílu */
+  .hh-dil-intro { max-width: 720px; margin: 1.6rem auto 0; padding: 0 2rem; }
+  .hh-dil-intro-text { font-family: 'Lora', serif; font-size: 16px; line-height: 1.9; color: #7a6a50; font-style: italic; }
+
+  /* Postavy */
   .hh-chars { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
     background: #1e1a10; border-top: 1px solid #1e1a10; border-bottom: 1px solid #1e1a10;
     margin: 1.4rem 2rem 0; border-radius: 4px; overflow: hidden; }
@@ -98,21 +211,30 @@
   .hh-char:hover .hh-char-img img { filter: contrast(1.14) saturate(0.85) brightness(1.02); }
   .hh-char-fade { position: absolute; bottom: 0; left: 0; right: 0; height: 50%;
     background: linear-gradient(transparent, rgba(8,6,3,0.97)); pointer-events: none; }
-  .hh-char-play { position: absolute; bottom: 0; left: 0; right: 0; display: flex;
-    align-items: center; justify-content: center; padding-bottom: 16px;
-    opacity: 0; transition: opacity 0.18s; z-index: 3; }
+  .hh-char-play { position: absolute; bottom: 0; left: 0; right: 0;
+    display: flex; align-items: center; justify-content: center;
+    padding-bottom: 16px; opacity: 0; transition: opacity 0.18s; z-index: 3; }
   .hh-char:hover .hh-char-play { opacity: 1; }
-  .hh-char-play span { font-size: 16px; letter-spacing: 5px; text-transform: uppercase;
+  .hh-char-play span { font-size: 11px; letter-spacing: 5px; text-transform: uppercase;
     color: #b8962e; border: 1px solid #b8962e; padding: 6px 16px; background: rgba(13,11,8,0.88); }
   .hh-gold-line { height: 2px; background: transparent; transition: background 0.15s; }
   .hh-char:hover .hh-gold-line { background: #b8962e; }
-  .hh-char-info { padding: 16px 16px 20px; display: flex; flex-direction: column; gap: 6px; }
-  .hh-char-role { font-size: 15px; letter-spacing: 4px; color: #6a6040; text-transform: uppercase; }
+  .hh-char-info { padding: 28px 24px 36px; display: flex; flex-direction: column; gap: 18px; }
+  .hh-char-role { font-size: 15px; letter-spacing: 2px; color: #6a6040; text-transform: uppercase; line-height: 1.4; }
   .hh-char-name { font-size: 30px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #d0c090; line-height: 1.2; }
-  .hh-char-desc { font-family: 'Lora', serif; font-size: 21px; font-style: italic; color: #6a5e48; line-height: 1.6; margin-top: 2px; }
+  .hh-char-badge-type { display: flex; }
+  .hh-badge { font-family: 'Oswald', sans-serif; font-size: 10px; letter-spacing: 2px;
+    text-transform: uppercase; padding: 3px 8px; border-radius: 2px; font-weight: 600; }
+  .hh-badge-real { background: #1e2a1e; color: #6a9a6a; border: 1px solid #2e4a2e; }
+  .hh-badge-fiction { background: #2a1e2a; color: #9a6a9a; border: 1px solid #4a2e4a; }
+  .hh-char-desc { font-family: 'Lora', serif; font-size: 21px; font-style: italic; color: #6a5e48; line-height: 1.6; }
   .hh-char:hover .hh-char-role { color: #b8962e; }
   .hh-char:hover .hh-char-name { color: #f0e6c8; }
   .hh-char:hover .hh-char-desc { color: #9a8a68; }
+
+  /* Choices label */
+  .hh-choices-label { font-size: 15px; letter-spacing: 3px; color: var(--text-faint); text-transform: uppercase; margin-bottom: 1.2rem; font-weight: 600; }
+
   .hh-bottom { padding: 1.8rem 2rem 0; }
   .hh-btn-back { display: inline-flex; align-items: center; gap: 8px; background: transparent;
     border: 1px solid #2e2818; color: #6a6040; font-family: 'Oswald', sans-serif; font-size: 16px;
@@ -120,66 +242,228 @@
     cursor: pointer; transition: all 0.18s; }
   .hh-btn-back:hover { border-color: #b8962e; color: #b8962e; }
 
-  /* RESPONZIVITA */
+  /* ══ RESPONZIVITA ══ */
   @media (max-width: 720px) {
-    .hh-logo { font-size: 44px; letter-spacing: 6px; }
-    .hh-s2-title { font-size: 32px; }
+    .hh-logo { font-size: 64px; letter-spacing: 6px; }
+    .hh-s2-title { font-size: 42px; }
     .hh-grid { grid-template-columns: 1fr; margin: 0 1.2rem; }
     .hh-chars { grid-template-columns: 1fr; margin: 1.2rem 1.2rem 0; }
-    .hh-hus-portrait { width: 176px; height: 176px; }
+    .hh-hus-portrait { width: 160px; height: 160px; }
     .hh-bottom { padding: 1.4rem 1.2rem 0; }
-    .hh-player { padding: 0.8rem 1.2rem 0; gap: 8px; }
-    .hh-vol-slider { width: 44px; }
+    .hh-topbar-inner { padding: 0 1.2rem; }
+    .hh-intro { padding: 0 1.2rem; }
+    .hh-dil-intro { padding: 0 1.2rem; }
   }
   @media (max-width: 480px) {
-    .hh-logo { font-size: 32px; letter-spacing: 4px; }
-    .hh-grid { grid-template-columns: 1fr; margin: 0 0.8rem; }
-    .hh-chars { grid-template-columns: repeat(2, 1fr); margin: 1rem 0.8rem 0; }
-    .hh-s2-title { font-size: 24px; letter-spacing: 2px; }
-    .hh-player-track { display: none; }
+    .hh-logo { font-size: 44px; letter-spacing: 4px; }
+    .hh-s2-title { font-size: 32px; letter-spacing: 2px; }
+    .hh-chars { grid-template-columns: 1fr; }
+    .hh-vol-slider { display: none; }
+  }
+
+  /* ══ SIDE PANEL – větší, výraznější ══ */
+  .hh-panel {
+    width: min(680px, 95vw);
+  }
+  .hh-panel-item {
+    padding: 18px 2rem;
+    font-size: 15px;
+    letter-spacing: 2px;
+    font-family: 'Oswald', sans-serif;
+    color: #c8b890;
+    border-bottom: 1px solid #2a2418;
+  }
+  .hh-panel-item:hover { color: #f0d870; background: #181410; }
+  .hh-panel-item.sub-open { color: #b8962e; }
+  .hh-panel-item .arr { font-size: 14px; color: #5a5030; }
+  .hh-panel-content {
+    padding: 1.6rem 2rem 1.8rem;
+  }
+  .hh-panel-content p {
+    font-size: 15px;
+    line-height: 1.85;
+    color: #8a7a5a;
+  }
+  .hh-panel-content h3 {
+    font-size: 12px;
+    letter-spacing: 5px;
+    font-family: 'Oswald', sans-serif;
+  }
+  .hh-panel-title {
+    font-size: 13px;
+    letter-spacing: 6px;
+    color: #7a6840;
+  }
+
+  /* ══ AUDIO CTRL – větší ══ */
+  .hh-audio-play {
+    width: 40px;
+    height: 40px;
+    font-size: 14px;
+    border: 1px solid #4a3e20;
+    color: #b8962e;
+  }
+  .hh-audio-play:hover { border-color: #d4a830; color: #d4a830; background: #1a1408; }
+  .hh-vol-icon { font-size: 14px; color: #7a6840; }
+  .hh-vol-slider { width: 70px; }
+
+  /* ══ KOMENTÁŘE ══ */
+  .hh-comments-list {
+    margin-bottom: 1.4rem;
+  }
+  .hh-comment {
+    padding: 1rem 0;
+    border-bottom: 1px solid #1e1a10;
+  }
+  .hh-comment:last-child { border-bottom: none; }
+  .hh-comment-meta {
+    font-family: 'Oswald', sans-serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: #5a5030;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .hh-comment-text {
+    font-family: 'Lora', serif;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #8a7a5a;
+    font-style: italic;
+  }
+  .hh-comment-empty {
+    font-family: 'Lora', serif;
+    font-size: 13px;
+    color: #3a3020;
+    font-style: italic;
+    margin-bottom: 1.2rem;
   }
 
 
-
-
+  /* Menu – větší texty */
+  .hh-panel-item {
+    font-size: 18px;
+    letter-spacing: 2px;
+    padding: 22px 2rem;
+  }
+  .hh-panel-content p {
+    font-size: 17px;
+    line-height: 1.9;
+  }
+  .hh-panel-content h3 {
+    font-size: 13px;
+    letter-spacing: 5px;
+    margin: 1.6rem 0 0.8rem;
+  }
+  .hh-panel-title {
+    font-size: 14px;
+    letter-spacing: 7px;
+  }
+  .hh-nl-input {
+    font-size: 15px;
+    padding: 12px 16px;
+  }
+  .hh-nl-btn {
+    font-size: 13px;
+    letter-spacing: 5px;
+    padding: 13px;
+  }
+  .hh-comment-meta { font-size: 11px; }
+  .hh-comment-text { font-size: 16px; }
+  .hh-comment-empty { font-size: 15px; }
 
 </style>
 </head>
 <body>
-<div class="hh">
 
-<!-- ════════════════════════════════════════════════════════
-     EDITAČNÍ SEKCE — OBRÁZKY A AUDIO
-     Změň pouze hodnoty za src= a href=
-     ════════════════════════════════════════════════════════
+<!-- ══ GLOBAL TOPBAR ══ -->
+<div class="hh-topbar-wrap">
+  <div class="hh-topbar-inner">
+    <button class="hh-burger" id="burger-btn" onclick="openPanel()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="hh-audio-ctrl">
+      <button class="hh-audio-play" id="audio-play-btn" onclick="toggleAudio()" title="Hudba">▶</button>
+      <span class="hh-vol-icon">♪</span>
+      <input class="hh-vol-slider" type="range" min="0" max="1" step="0.05" value="0.5"
+        oninput="setVol(this.value)" title="Hlasitost"/>
+    </div>
+  </div>
+</div>
 
-  OBRÁZKY DÍLŮ (složka images/):
-    Díl I:    images/dil-1.jpg
-    Díl II:   images/dil-2.jpg
-    Díl III:  images/dil-3.jpg
-    ... atd.
+<!-- ══ SIDE PANEL ══ -->
+<div class="hh-overlay" id="panel-overlay" onclick="closePanel()"></div>
+<div class="hh-panel" id="side-panel">
+  <div class="hh-panel-header">
+    <span class="hh-panel-title">Menu</span>
+    <button class="hh-panel-close" onclick="closePanel()">×</button>
+  </div>
+  <nav class="hh-panel-nav">
 
-  OBRÁZKY POSTAV (složka images/):
-    Jan Hus (kruh):    images/jan-hus.jpg
-    Štěpán Páleč:      images/stepan-palec.jpg
-    Petr z Mladoňovic: images/petr-z-mladonovic.jpg
-    Václav z Dubé:     images/vaclav-z-dube.jpg
-    Jakub Vlček:       images/jakub-vlcek.jpg
+    <div class="hh-panel-item" id="jak-toggle" onclick="toggleItem('jak')">
+      <span>Jak to funguje</span><span class="arr">›</span>
+    </div>
+    <div class="hh-panel-content" id="jak-content">
+      <p>Hráč si na začátku vybírá jednu ze čtyř postav – každá má jiné postavení, jiný vztah k Husovi a jiný důvod, proč se ocitla právě tady, v Kostnici roku 1415. Většina z nich skutečně žila a jednala tak, jak je to doloženo v dobových pramenech, především v latinské Zprávě Petra z Mladoňovic, jednoho z mála přímých očitých svědků celého procesu – bez ní bychom dnes o posledních měsících Husova života věděli jen zlomek toho, co víme. Tam, kde prameny mlčí, doplňuje příběh fikce, ale drží se toho, co bylo v dané době a na daném místě věrohodné.</p>
+      <p>Hra se zároveň snaží propojovat perspektivy jednotlivých postav – stejnou scénu, stejný okamžik, viděný jednou i podruhé, ale očima někoho jiného. Základní dějová linka je daná historií a hráč ji svými rozhodnutími nezmění – Hus dorazí do Kostnice, bude souzen a nakonec upálen. O čem volby na konci každé kapitoly rozhodují, je něco jiného: jakým způsobem se hráčova postava o těchto událostech dozvídá, co z nich zahlédne nebo zaslechne, čemu uvěří a co si nechá pro sebe.</p>
+      <h3>Pro koho je hra určena</h3>
+      <p>Text je psaný moderní, mírně nespisovnou češtinou a kombinuje vyprávění s přímou řečí; cílí tedy hlavně na gymnaziální studenty a starší čtenáře, kteří chtějí historii zažít, ne se ji jen naučit nazpaměť. Vzdělávací obsah je zabudovaný přímo do textu, ne oddělený jako poznámky pod čarou.</p>
+    </div>
 
-  HUDBA (složka audio/):
-    Menu track:        audio/menu.mp3
-    (přehraje se na stránce dílů i postav, ve smyčce)
+    <div class="hh-panel-item" id="kontakt-toggle" onclick="toggleItem('kontakt')">
+      <span>Chci zůstat v kontaktu</span><span class="arr">›</span>
+    </div>
+    <div class="hh-panel-content" id="kontakt-content">
+      <p>Hra vzniká postupně – nové díly, nové postavy, nový obsah. Pokud chceš vědět, kdy vyjde něco nového, nech nám svůj e-mail.</p>
+      <form name="newsletter" data-netlify="true" onsubmit="handleNewsletter(event)">
+        <input type="hidden" name="form-name" value="newsletter"/>
+        <input class="hh-nl-input" type="email" name="email" placeholder="Tvůj e-mail" required/>
+        <button class="hh-nl-btn" type="submit">Přihlásit k odběru</button>
+      </form>
+      <p class="hh-nl-ok" id="nl-ok">Díky! Ozveme se, až vyjde něco nového.</p>
+    </div>
 
-  Formáty: JPG nebo PNG pro obrázky, MP3 nebo OGG pro audio
-════════════════════════════════════════════════════════ -->
+    <div class="hh-panel-item" id="komentar-toggle" onclick="toggleItem('komentar')">
+      <span>Zanechat komentář</span><span class="arr">›</span>
+    </div>
+    <div class="hh-panel-content" id="komentar-content">
+      <!-- Schválené komentáře – přidávej ručně níže -->
+      <div class="hh-comments-list" id="comments-list">
+        <p class="hh-comment-empty">Zatím žádné komentáře. Buď první!</p>
+        <!-- Příklad komentáře (odkomentuj a uprav):
+        <div class="hh-comment">
+          <div class="hh-comment-meta">Jan N. &nbsp;·&nbsp; červen 2026</div>
+          <p class="hh-comment-text">Text komentáře...</p>
+        </div>
+        -->
+      </div>
+      <form name="komentar" data-netlify="true" onsubmit="handleKomentar(event)">
+        <input type="hidden" name="form-name" value="komentar"/>
+        <input class="hh-nl-input" type="text" name="jmeno" placeholder="Tvoje jméno (volitelné)" style="margin-bottom:8px;"/>
+        <textarea class="hh-nl-input" name="komentar" placeholder="Tvůj komentář..." required
+          style="height:90px;resize:vertical;display:block;font-family:'Lora',serif;"></textarea>
+        <button class="hh-nl-btn" type="submit" style="margin-top:8px;">Odeslat komentář</button>
+      </form>
+      <p class="hh-nl-ok" id="komentar-ok">Díky za komentář! Po schválení se zobrazí zde.</p>
+    </div>
 
-<!-- AUDIO ELEMENT – menu hudba -->
+    <div class="hh-panel-item" onclick="goHome()">
+      <span>Přehled dílů</span><span class="arr">›</span>
+    </div>
+
+  </nav>
+</div>
+
+<!-- ══ AUDIO ══ -->
 <audio id="menu-audio" loop preload="none">
   <source src="audio/menu.mp3" type="audio/mpeg">
   <source src="audio/menu.ogg" type="audio/ogg">
 </audio>
 
-  <!-- ══ SCREEN 1 – PŘEHLED DÍLŮ ══ -->
+<!-- ══ HLAVNÍ OBSAH ══ -->
+<div class="hh">
+
+  <!-- SCREEN 1 – PŘEHLED DÍLŮ -->
   <div class="screen active" id="screen-dily">
     <div class="hh-header">
       <p class="hh-eyebrow">Interaktivní gamebook</p>
@@ -187,26 +471,17 @@
       <div class="hh-rule"></div>
     </div>
 
-    <!-- PŘEHRÁVAČ MENU -->
-    <div class="hh-player">
-      <button class="hh-player-btn" id="menu-play-btn" onclick="toggleMenuAudio()" title="Přehrát / Pozastavit">▶</button>
-      <span class="hh-player-track" id="menu-track-name">Husité – hlavní téma</span>
-      <div class="hh-player-vol">
-        <span class="hh-player-vol-icon">♪</span>
-        <input class="hh-vol-slider" type="range" min="0" max="1" step="0.05" value="0.5"
-          oninput="document.getElementById('menu-audio').volume=this.value" title="Hlasitost"/>
-      </div>
+    <div class="hh-intro">
+      <p class="hh-intro-text">O husitství se u nás mluví různě – jednou jako o vrcholu národní hrdosti, jindy jako o éře fanatismu a rozvratu, a nezřídka je vykládáno tak, jak se to zrovna komu hodí. Ať už na něj ale nahlížíme jakkoli, byla to doba, kdy si obyčejní lidé dovolili vzepřít se moci, která tehdy ovládala celý evropský kontinent, a kdy se otázky svědomí, pravdy a poslušnosti řešily s nasazením vlastního života. Upálení Jana Husa je prvním dílem série, která by měla postupně provést celým tímto obdobím – a Hus je pro ni přirozeným začátkem, protože bez něj by husitská revoluce, jak ji známe, nejspíš vůbec nevznikla.</p>
+      <div class="hh-intro-rule"></div>
     </div>
 
     <p class="hh-section-label">Vyber díl</p>
-    <div class="hh-grid">
 
-      <!-- ── DÍL I – dostupný ──
-           OBRÁZEK: změň src na images/dil-1.jpg (nebo jiný název)
-           ODEMKNOUT: přidej třídu "available", odstraň "locked", přidej onclick -->
+    <div class="hh-grid">
       <div class="hh-dil available" onclick="showScreen('screen-postavy')">
         <div class="hh-dil-img">
-          <img src="images/jan-hus.jpg" alt="Mistr Jan Hus"/>   <!-- ← OBRÁZEK DÍL I -->
+          <img src="images/jan-hus.jpg" alt="Mistr Jan Hus"/>
           <div class="hh-dil-img-fade"></div>
         </div>
         <div class="hh-dil-body">
@@ -215,63 +490,24 @@
         </div>
         <span class="hh-dil-arrow">→</span>
       </div>
-
-      <!-- ── DÍL II ── OBRÁZEK: images/dil-2.jpg -->
-      <div class="hh-dil locked">
-        <div class="hh-dil-img-placeholder"></div>   <!-- ← Nahraď: <div class="hh-dil-img"><img src="images/dil-2.jpg"/><div class="hh-dil-img-fade"></div></div> -->
-        <div class="hh-dil-body"><div><div class="hh-dil-num">Díl II</div><div class="hh-dil-title">Defenestrace</div></div><div class="hh-dil-year">1419 – 1420</div></div>
-      </div>
-
-      <!-- ── DÍL III ── OBRÁZEK: images/dil-3.jpg -->
-      <div class="hh-dil locked">
-        <div class="hh-dil-img-placeholder"></div>
-        <div class="hh-dil-body"><div><div class="hh-dil-num">Díl III</div><div class="hh-dil-title">Bitva na Vítkově</div></div><div class="hh-dil-year">1420</div></div>
-      </div>
-
-      <!-- ── DÍL IV ── OBRÁZEK: images/dil-4.jpg -->
-      <div class="hh-dil locked">
-        <div class="hh-dil-img-placeholder"></div>
-        <div class="hh-dil-body"><div><div class="hh-dil-num">Díl IV</div><div class="hh-dil-title">Žižkovo tažení</div></div><div class="hh-dil-year">1421 – 1423</div></div>
-      </div>
-
-      <!-- ── DÍL V ── OBRÁZEK: images/dil-5.jpg -->
-      <div class="hh-dil locked">
-        <div class="hh-dil-img-placeholder"></div>
-        <div class="hh-dil-body"><div><div class="hh-dil-num">Díl V</div><div class="hh-dil-title">Smrt Jana Žižky</div></div><div class="hh-dil-year">1424</div></div>
-      </div>
-
-      <!-- ── DÍL VI ── OBRÁZEK: images/dil-6.jpg -->
-      <div class="hh-dil locked">
-        <div class="hh-dil-img-placeholder"></div>
-        <div class="hh-dil-body"><div><div class="hh-dil-num">Díl VI</div><div class="hh-dil-title">Spanilé jízdy</div></div><div class="hh-dil-year">1427 – 1430</div></div>
-      </div>
-
-      <!-- ── DÍL VII ── OBRÁZEK: images/dil-7.jpg -->
-      <div class="hh-dil locked">
-        <div class="hh-dil-img-placeholder"></div>
-        <div class="hh-dil-body"><div><div class="hh-dil-num">Díl VII</div><div class="hh-dil-title">Basilejský koncil</div></div><div class="hh-dil-year">1431 – 1433</div></div>
-      </div>
-
-      <!-- ── DÍL VIII ── OBRÁZEK: images/dil-8.jpg -->
-      <div class="hh-dil locked">
-        <div class="hh-dil-img-placeholder"></div>
-        <div class="hh-dil-body"><div><div class="hh-dil-num">Díl VIII</div><div class="hh-dil-title">Bitva u Lipan</div></div><div class="hh-dil-year">1434</div></div>
-      </div>
-
+      <div class="hh-dil locked"><div class="hh-dil-img-placeholder"></div><div class="hh-dil-body"><div><div class="hh-dil-num">Díl II</div><div class="hh-dil-title">Defenestrace</div></div><div class="hh-dil-year">1419 – 1420</div></div></div>
+      <div class="hh-dil locked"><div class="hh-dil-img-placeholder"></div><div class="hh-dil-body"><div><div class="hh-dil-num">Díl III</div><div class="hh-dil-title">Bitva na Vítkově</div></div><div class="hh-dil-year">1420</div></div></div>
+      <div class="hh-dil locked"><div class="hh-dil-img-placeholder"></div><div class="hh-dil-body"><div><div class="hh-dil-num">Díl IV</div><div class="hh-dil-title">Žižkovo tažení</div></div><div class="hh-dil-year">1421 – 1423</div></div></div>
+      <div class="hh-dil locked"><div class="hh-dil-img-placeholder"></div><div class="hh-dil-body"><div><div class="hh-dil-num">Díl V</div><div class="hh-dil-title">Smrt Jana Žižky</div></div><div class="hh-dil-year">1424</div></div></div>
+      <div class="hh-dil locked"><div class="hh-dil-img-placeholder"></div><div class="hh-dil-body"><div><div class="hh-dil-num">Díl VI</div><div class="hh-dil-title">Spanilé jízdy</div></div><div class="hh-dil-year">1427 – 1430</div></div></div>
+      <div class="hh-dil locked"><div class="hh-dil-img-placeholder"></div><div class="hh-dil-body"><div><div class="hh-dil-num">Díl VII</div><div class="hh-dil-title">Basilejský koncil</div></div><div class="hh-dil-year">1431 – 1433</div></div></div>
+      <div class="hh-dil locked"><div class="hh-dil-img-placeholder"></div><div class="hh-dil-body"><div><div class="hh-dil-num">Díl VIII</div><div class="hh-dil-title">Bitva u Lipan</div></div><div class="hh-dil-year">1434</div></div></div>
     </div>
   </div>
 
-  <!-- ══ SCREEN 2 – VÝBĚR POSTAVY ══ -->
+  <!-- SCREEN 2 – VÝBĚR POSTAVY -->
   <div class="screen" id="screen-postavy">
     <div class="hh-s2-header">
       <p class="hh-eyebrow">Interaktivní gamebook</p>
       <p class="hh-s2-logo">Husité</p>
-
-      <!-- KRUHOVÝ PORTRÉT JANA HUSA – OBRÁZEK: images/jan-hus.jpg -->
       <div class="hh-hus-portrait">
-        <img src="images/jan-hus.jpg" alt="Jan Hus"/>   <!-- ← OBRÁZEK JAN HUS -->
+        <img src="images/jan-hus.jpg" alt="Jan Hus"/>
       </div>
-
       <div style="margin-top:14px;">
         <p class="hh-s2-period">Díl I &nbsp;·&nbsp; 1412–1415</p>
         <p class="hh-s2-title">Mistr Jan Hus</p>
@@ -279,67 +515,71 @@
       <div class="hh-rule" style="margin-top:1.2rem;"></div>
     </div>
 
+    <div class="hh-dil-intro">
+      <p class="hh-dil-intro-text">Na začátku patnáctého století stálo evropské křesťanstvo před podivnou situací: mělo tři papeže najednou, každý s vlastními nároky na Petrův stolec a vlastní skupinou přívrženců. Byla to doba, kdy církev, o níž se soudilo, že drží klíče od nebe, byla sama rozdělená a v očích mnoha věřících ztrácela důvěryhodnost rychleji, než ji dokázala obhajovat. A do tohoto světa vstupuje pražský mistr Jan Hus s přesvědčením, že autorita patří Písmu, ne úřadu, a že svědomí jednotlivce nelze umlčet ani papežskou bulou.</p>
+    </div>
+
     <p class="hh-section-label">Klikni na postavu a zahraj si její příběh</p>
 
     <div class="hh-chars">
 
-      <!-- ── ŠTĚPÁN PÁLEČ ── OBRÁZEK: images/stepan-palec.jpg -->
       <a class="hh-char" href="palec/kap-01-betlemska-kaple.html">
         <div class="hh-char-img">
-          <img src="images/stepan-palec.jpg" alt="Štěpán Páleč"/>   <!-- ← OBRÁZEK PÁLEČ -->
+          <img src="images/stepan-palec.jpg" alt="Štěpán Páleč"/>
           <div class="hh-char-fade"></div>
           <div class="hh-char-play"><span>Hrát</span></div>
         </div>
         <div class="hh-gold-line"></div>
         <div class="hh-char-info">
-          <span class="hh-char-role">Teolog</span>
+          <span class="hh-char-role">Teolog, Husův bývalý přítel a jeden z jeho žalobců</span>
           <span class="hh-char-name">Štěpán Páleč</span>
-          <span class="hh-char-desc">Husův nejbližší přítel se stal jeho hlavním žalobcem. Co ho přivedlo na druhou stranu?</span>
+          <div class="hh-char-badge-type"><span class="hh-badge hh-badge-real">Reálná postava</span></div>
+          <span class="hh-char-desc">Teolog, bývalý Husův blízký přítel a spolupracovník. Původně odvážnější než Hus – společně hájili Viklefovy teze. Vlivem několika okolností však přešel na druhou stranu a stal se Husovým žalobcem v Kostnici. Svádí vnitřní zápas o pravdu.</span>
         </div>
       </a>
 
-      <!-- ── PETR Z MLADOŇOVIC ── OBRÁZEK: images/petr-z-mladonovic.jpg -->
       <a class="hh-char" href="petr/kap-01-betlemska-kaple.html">
         <div class="hh-char-img">
-          <img src="images/petr-z-mladonovic.jpg" alt="Petr z Mladoňovic"/>   <!-- ← OBRÁZEK PETR -->
+          <img src="images/petr-z-mladonovic.jpg" alt="Petr z Mladoňovic"/>
           <div class="hh-char-fade"></div>
           <div class="hh-char-play"><span>Hrát</span></div>
         </div>
         <div class="hh-gold-line"></div>
         <div class="hh-char-info">
-          <span class="hh-char-role">Písař</span>
+          <span class="hh-char-role">Bakalář, písař Jana z Chlumu, Husův obdivovatel</span>
           <span class="hh-char-name">Petr z Mladoňovic</span>
-          <span class="hh-char-desc">Mladý bakalář a Husův věrný žák. Zapisuje vše, co vidí — i to, co by raději neviděl.</span>
+          <div class="hh-char-badge-type"><span class="hh-badge hh-badge-real">Reálná postava</span></div>
+          <span class="hh-char-desc">Mladý vzdělaný bakalář ve šlechtických službách, Husův žák a obdivovatel. Idealista, který vidí svět černobíle. Nicméně v Kostnici zjišťuje, že svět není takový, jaký si myslel. Vrací se s rukopisem který se stane historickým svědectvím – Relatio je dnes prakticky jediný souvislý pramen o Husově procesu.</span>
         </div>
       </a>
 
-      <!-- ── VÁCLAV Z DUBÉ ── OBRÁZEK: images/vaclav-z-dube.jpg -->
       <a class="hh-char" href="vaclav/kap-01-betlemska-kaple.html">
         <div class="hh-char-img">
-          <img src="images/vaclav-z-dube.jpg" alt="Václav z Dubé"/>   <!-- ← OBRÁZEK VÁCLAV -->
+          <img src="images/vaclav-z-dube.jpg" alt="Václav z Dubé"/>
           <div class="hh-char-fade"></div>
           <div class="hh-char-play"><span>Hrát</span></div>
         </div>
         <div class="hh-gold-line"></div>
         <div class="hh-char-info">
-          <span class="hh-char-role">Rytíř</span>
+          <span class="hh-char-role">Český katolický šlechtic, Husův osobní přítel</span>
           <span class="hh-char-name">Václav z Dubé</span>
-          <span class="hh-char-desc">Zikmundův muž, Husův ochránce. Přivezl glejt, který nic nezachránil.</span>
+          <div class="hh-char-badge-type"><span class="hh-badge hh-badge-real">Reálná postava</span></div>
+          <span class="hh-char-desc">Zkušený voják a šlechtic, Zikmund jej odvolal z tažení v Itálii, aby doprovodil Husa do Kostnice. Osobně vyzvedne glejt, který má Husa chránit. Rozvážný, zvyklý že jeho slovo má váhu. Má kontakty a má vliv. Ale přesto to nestačí. Poprvé v životě naráží na zeď, kterou peníze ani tituly neprobourají.</span>
         </div>
       </a>
 
-      <!-- ── JAKUB VLČEK ── OBRÁZEK: images/jakub-vlcek.jpg -->
       <a class="hh-char" href="jakub/kap-01-betlemska-kaple.html">
         <div class="hh-char-img">
-          <img src="images/jakub-vlcek.jpg" alt="Jakub Vlček"/>   <!-- ← OBRÁZEK JAKUB -->
+          <img src="images/jakub-vlcek.jpg" alt="Jakub Vlček"/>
           <div class="hh-char-fade"></div>
           <div class="hh-char-play"><span>Hrát</span></div>
         </div>
         <div class="hh-gold-line"></div>
         <div class="hh-char-info">
-          <span class="hh-char-role">Kupec</span>
+          <span class="hh-char-role">Pražský kupec se suknem</span>
           <span class="hh-char-name">Jakub Vlček</span>
-          <span class="hh-char-desc">Jede do Kostnice za obchodem. Do dějin ho nikdo nezval, a přesto tam bude.</span>
+          <div class="hh-char-badge-type"><span class="hh-badge hh-badge-fiction">Fiktivní postava</span></div>
+          <span class="hh-char-desc">Fiktivní pražský kupec se suknem. Pragmatický, vtipný, trochu cynický. Zná Husa z Betlémské kaple – chodil tam ze zvyku. V Kostnici se setkává s Ulrichem Richentalem – místním kronikářem-měšťanem, který píše o koncilu jako o spektáklu. Přijel vydělat peníze, ne řešit teologii. Ale Husa zná. A teď ho chtějí zabít!</span>
         </div>
       </a>
 
@@ -351,43 +591,98 @@
   </div>
 
 </div>
-<script>
-  // Index je vždy tmavý – odeber light třídu z html (nemění uloženou volbu)
-  document.documentElement.classList.remove('light');
-  document.documentElement.style.removeProperty('--bg');
-  document.documentElement.style.removeProperty('--bg-bar');
 
+<script>
+
+  // ══ KOMENTÁŘE ══
+  function handleKomentar(e) {
+    e.preventDefault();
+    var form = e.target;
+    fetch('/', { method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(new FormData(form)).toString()
+    }).finally(function() {
+      form.style.display = 'none';
+      document.getElementById('komentar-ok').style.display = 'block';
+    });
+  }
+
+  // ══ PŘEHLED DÍLŮ ══
+  function goHome() {
+    closePanel();
+    showScreen('screen-dily');
+    window.scrollTo(0, 0);
+  }
+
+  // ══ SCREENS ══
   function showScreen(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
     document.getElementById(id).classList.add('active');
     window.scrollTo(0, 0);
   }
 
-  // Přepni na správnou obrazovku dle URL parametru ?screen=postavy
+  // Zpracuj ?screen=postavy parametr
   (function() {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('screen') === 'postavy') showScreen('screen-postavy');
+    if (new URLSearchParams(window.location.search).get('screen') === 'postavy') {
+      showScreen('screen-postavy');
+    }
   })();
 
-  // ── MENU AUDIO ──
-  const menuAudio = document.getElementById('menu-audio');
-  const menuBtn   = document.getElementById('menu-play-btn');
-  menuAudio.volume = 0.5;
-
-  function toggleMenuAudio() {
-    if (menuAudio.paused) {
-      menuAudio.play().catch(() => {}); // ignoruj autoplay blokování
-      menuBtn.textContent = '⏸';
-      menuBtn.classList.add('playing');
-    } else {
-      menuAudio.pause();
-      menuBtn.textContent = '▶';
-      menuBtn.classList.remove('playing');
+  // ══ SIDE PANEL ══
+  function openPanel() {
+    document.getElementById('side-panel').classList.add('open');
+    document.getElementById('panel-overlay').classList.add('open');
+    document.getElementById('burger-btn').classList.add('open');
+  }
+  function closePanel() {
+    document.getElementById('side-panel').classList.remove('open');
+    document.getElementById('panel-overlay').classList.remove('open');
+    document.getElementById('burger-btn').classList.remove('open');
+  }
+  function toggleItem(key) {
+    var content = document.getElementById(key + '-content');
+    var toggle = document.getElementById(key + '-toggle');
+    var isOpen = content.classList.contains('open');
+    document.querySelectorAll('.hh-panel-content').forEach(function(el) { el.classList.remove('open'); });
+    document.querySelectorAll('.hh-panel-item').forEach(function(el) { el.classList.remove('sub-open'); });
+    if (!isOpen) {
+      content.classList.add('open');
+      toggle.classList.add('sub-open');
     }
   }
 
-  // Udrž stav přehrávání při přepnutí screen-dily ↔ screen-postavy
-  document.getElementById('screen-postavy').addEventListener('transitionend', () => {});
+  // ══ AUDIO ══
+  var audio = document.getElementById('menu-audio');
+  var playBtn = document.getElementById('audio-play-btn');
+  audio.volume = 0.5;
+  function toggleAudio() {
+    if (audio.paused) {
+      audio.play().catch(function(){});
+      playBtn.textContent = '⏸';
+      playBtn.classList.add('playing');
+    } else {
+      audio.pause();
+      playBtn.textContent = '▶';
+      playBtn.classList.remove('playing');
+    }
+  }
+  function setVol(v) { audio.volume = v; }
+
+  // ══ NEWSLETTER ══
+  function handleNewsletter(e) {
+    e.preventDefault();
+    var form = e.target;
+    fetch('/', { method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(new FormData(form)).toString()
+    }).finally(function() {
+      form.style.display = 'none';
+      document.getElementById('nl-ok').style.display = 'block';
+    });
+  }
+
+  // Index je vždy tmavý
+  document.documentElement.classList.remove('light');
 </script>
 </body>
 </html>
