@@ -13,7 +13,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Husité – Interaktivní gamebook</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=IM+Fell+English:ital@0;1&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Lora:ital@0;1&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { background: #0a0805; min-height: 100%; }
 
@@ -24,10 +24,10 @@
 
   /* HEADER */
   .hh-header { text-align: center; padding: 2.8rem 1.5rem 0; }
-  .hh-eyebrow { font-size: 11px; letter-spacing: 7px; color: #b8962e; text-transform: uppercase; margin-bottom: 10px; }
-  .hh-logo { font-size: 64px; font-weight: 700; letter-spacing: 10px; text-transform: uppercase; color: #f0e6c8; line-height: 1; }
+  .hh-eyebrow { font-size: 16px; letter-spacing: 7px; color: #b8962e; text-transform: uppercase; margin-bottom: 10px; }
+  .hh-logo { font-size: 96px; font-weight: 700; letter-spacing: 10px; text-transform: uppercase; color: #f0e6c8; line-height: 1; }
   .hh-rule { width: 110px; height: 1px; background: linear-gradient(90deg, transparent, #b8962e, transparent); margin: 1.3rem auto 0; }
-  .hh-section-label { font-size: 12px; letter-spacing: 5px; color: #5a5030; text-transform: uppercase; text-align: center; margin: 1.5rem 0 1.4rem; }
+  .hh-section-label { font-size: 18px; letter-spacing: 5px; color: #5a5030; text-transform: uppercase; text-align: center; margin: 1.5rem 0 1.4rem; }
 
   /* PŘEHRÁVAČ MENU */
   .hh-player { display: flex; align-items: center; justify-content: center; gap: 12px;
@@ -37,16 +37,16 @@
     display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; }
   .hh-player-btn:hover { border-color: #b8962e; color: #b8962e; }
   .hh-player-btn.playing { border-color: #b8962e; color: #b8962e; }
-  .hh-player-track { font-size: 10px; letter-spacing: 3px; color: #3a3020; text-transform: uppercase; }
+  .hh-player-track { font-size: 15px; letter-spacing: 3px; color: #3a3020; text-transform: uppercase; }
   .hh-player-vol { display: flex; align-items: center; gap: 6px; }
-  .hh-player-vol-icon { font-size: 11px; color: #3a3020; }
+  .hh-player-vol-icon { font-size: 16px; color: #3a3020; }
   .hh-vol-slider { -webkit-appearance: none; width: 60px; height: 2px; background: #2a2418;
     border-radius: 1px; outline: none; cursor: pointer; }
   .hh-vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 10px; height: 10px;
     border-radius: 50%; background: #b8962e; cursor: pointer; }
 
   /* GRID DÍLŮ */
-  .hh-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+  .hh-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
     background: #1e1a10; border-top: 1px solid #1e1a10; border-bottom: 1px solid #1e1a10;
     margin: 0 2rem; border-radius: 4px; overflow: hidden; }
   .hh-dil { background: #0d0b08; cursor: default; position: relative; display: flex;
@@ -66,27 +66,27 @@
     border: 1px solid #2a2418; border-radius: 50%; }
   .hh-dil-body { padding: 1rem 1.1rem 1.2rem; display: flex; flex-direction: column;
     gap: 5px; flex: 1; justify-content: space-between; }
-  .hh-dil-num { font-size: 11px; font-weight: 600; letter-spacing: 3px; color: #3a3020; text-transform: uppercase; }
+  .hh-dil-num { font-size: 16px; font-weight: 600; letter-spacing: 3px; color: #3a3020; text-transform: uppercase; }
   .hh-dil.available .hh-dil-num { color: #b8962e; }
-  .hh-dil-title { font-size: 15px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #4a4030; line-height: 1.3; }
+  .hh-dil-title { font-size: 22px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #4a4030; line-height: 1.3; }
   .hh-dil.available .hh-dil-title { color: #d8c898; }
-  .hh-dil-year { font-size: 11px; letter-spacing: 2px; color: #3a3020; margin-top: 4px; }
+  .hh-dil-year { font-size: 16px; letter-spacing: 2px; color: #3a3020; margin-top: 4px; }
   .hh-dil.available .hh-dil-year { color: #7a6840; }
-  .hh-dil-arrow { position: absolute; right: 10px; bottom: 10px; font-size: 14px;
+  .hh-dil-arrow { position: absolute; right: 10px; bottom: 10px; font-size: 21px;
     color: #b8962e; opacity: 0; transition: opacity 0.15s; }
   .hh-dil.available:hover .hh-dil-arrow { opacity: 1; }
 
   /* POSTAVY */
   .hh-s2-header { text-align: center; padding: 2.4rem 1.5rem 0; }
-  .hh-s2-logo { font-size: 18px; font-weight: 600; letter-spacing: 7px; text-transform: uppercase; color: #5a4e28; }
-  .hh-s2-period { font-size: 11px; letter-spacing: 4px; color: #5a5030; text-transform: uppercase; margin: 10px 0 6px; }
-  .hh-s2-title { font-size: 46px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: #f0e6c8; line-height: 1.1; }
-  .hh-hus-portrait { width: 110px; height: 110px; border-radius: 50%; overflow: hidden;
+  .hh-s2-logo { font-size: 27px; font-weight: 600; letter-spacing: 7px; text-transform: uppercase; color: #5a4e28; }
+  .hh-s2-period { font-size: 16px; letter-spacing: 4px; color: #5a5030; text-transform: uppercase; margin: 10px 0 6px; }
+  .hh-s2-title { font-size: 69px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: #f0e6c8; line-height: 1.1; }
+  .hh-hus-portrait { width: 220px; height: 220px; border-radius: 50%; overflow: hidden;
     border: 2px solid #b8962e; margin: 1.2rem auto 0; background: #111;
     box-shadow: 0 0 0 4px #1e1a10, 0 0 0 5px #b8962e44; }
   .hh-hus-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: center 10%;
     filter: contrast(1.08) saturate(0.6) brightness(0.88); }
-  .hh-chars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+  .hh-chars { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
     background: #1e1a10; border-top: 1px solid #1e1a10; border-bottom: 1px solid #1e1a10;
     margin: 1.4rem 2rem 0; border-radius: 4px; overflow: hidden; }
   .hh-char { background: #0d0b08; cursor: pointer; transition: background 0.18s;
@@ -102,20 +102,20 @@
     align-items: center; justify-content: center; padding-bottom: 16px;
     opacity: 0; transition: opacity 0.18s; z-index: 3; }
   .hh-char:hover .hh-char-play { opacity: 1; }
-  .hh-char-play span { font-size: 11px; letter-spacing: 5px; text-transform: uppercase;
+  .hh-char-play span { font-size: 16px; letter-spacing: 5px; text-transform: uppercase;
     color: #b8962e; border: 1px solid #b8962e; padding: 6px 16px; background: rgba(13,11,8,0.88); }
   .hh-gold-line { height: 2px; background: transparent; transition: background 0.15s; }
   .hh-char:hover .hh-gold-line { background: #b8962e; }
   .hh-char-info { padding: 16px 16px 20px; display: flex; flex-direction: column; gap: 6px; }
-  .hh-char-role { font-size: 10px; letter-spacing: 4px; color: #6a6040; text-transform: uppercase; }
-  .hh-char-name { font-size: 20px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #d0c090; line-height: 1.2; }
-  .hh-char-desc { font-family: 'IM Fell English', serif; font-size: 14px; font-style: italic; color: #6a5e48; line-height: 1.6; margin-top: 2px; }
+  .hh-char-role { font-size: 15px; letter-spacing: 4px; color: #6a6040; text-transform: uppercase; }
+  .hh-char-name { font-size: 30px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #d0c090; line-height: 1.2; }
+  .hh-char-desc { font-family: 'Lora', serif; font-size: 21px; font-style: italic; color: #6a5e48; line-height: 1.6; margin-top: 2px; }
   .hh-char:hover .hh-char-role { color: #b8962e; }
   .hh-char:hover .hh-char-name { color: #f0e6c8; }
   .hh-char:hover .hh-char-desc { color: #9a8a68; }
   .hh-bottom { padding: 1.8rem 2rem 0; }
   .hh-btn-back { display: inline-flex; align-items: center; gap: 8px; background: transparent;
-    border: 1px solid #2e2818; color: #6a6040; font-family: 'Oswald', sans-serif; font-size: 11px;
+    border: 1px solid #2e2818; color: #6a6040; font-family: 'Oswald', sans-serif; font-size: 16px;
     font-weight: 600; letter-spacing: 4px; text-transform: uppercase; padding: 11px 26px;
     cursor: pointer; transition: all 0.18s; }
   .hh-btn-back:hover { border-color: #b8962e; color: #b8962e; }
@@ -124,9 +124,9 @@
   @media (max-width: 720px) {
     .hh-logo { font-size: 44px; letter-spacing: 6px; }
     .hh-s2-title { font-size: 32px; }
-    .hh-grid { grid-template-columns: repeat(2, 1fr); margin: 0 1.2rem; }
-    .hh-chars { grid-template-columns: repeat(2, 1fr); margin: 1.2rem 1.2rem 0; }
-    .hh-hus-portrait { width: 88px; height: 88px; }
+    .hh-grid { grid-template-columns: 1fr; margin: 0 1.2rem; }
+    .hh-chars { grid-template-columns: 1fr; margin: 1.2rem 1.2rem 0; }
+    .hh-hus-portrait { width: 176px; height: 176px; }
     .hh-bottom { padding: 1.4rem 1.2rem 0; }
     .hh-player { padding: 0.8rem 1.2rem 0; gap: 8px; }
     .hh-vol-slider { width: 44px; }
@@ -206,7 +206,7 @@
            ODEMKNOUT: přidej třídu "available", odstraň "locked", přidej onclick -->
       <div class="hh-dil available" onclick="showScreen('screen-postavy')">
         <div class="hh-dil-img">
-          <img src="images/dil-1.jpg" alt="Mistr Jan Hus"/>   <!-- ← OBRÁZEK DÍL I -->
+          <img src="images/jan-hus.jpg" alt="Mistr Jan Hus"/>   <!-- ← OBRÁZEK DÍL I -->
           <div class="hh-dil-img-fade"></div>
         </div>
         <div class="hh-dil-body">
