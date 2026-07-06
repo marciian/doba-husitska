@@ -14,7 +14,16 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Lora:ital@1&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { background: #0a0805; min-height: 100%; }
+  /* ══ TÉMA – CSS proměnné ══ */
+  body { --bg: #0d0b08; --bg-bar: #2a2418; --bg-card: #131008; --bg-menu: #1a1510;
+    --border: #1e1a10; --border-mid: #3a3020; --gold: #b8962e; --gold-dim: #7a6840;
+    --text-main: #c8b890; --text-dim: #8a7a5a; --text-faint: #5a5030;
+    --text-head: #f0e6c8; --fs-desc: 18px; --fs-intro: 16px; }
+  html.light body { --bg: #f4f0e6; --bg-bar: #ddd5be; --bg-card: #e8e0cc; --bg-menu: #e0d8c4;
+    --border: #d4c9aa; --border-mid: #c4b898; --gold: #8a6e18; --gold-dim: #a08830;
+    --text-main: #2a2010; --text-dim: #5a4e30; --text-faint: #8a7e60; --text-head: #18120a; }
+
+  html, body { background: var(--bg, #0a0805); min-height: 100%; }
 
   /* ══ SCREENS ══ */
   .hh { background: #0d0b08; font-family: 'Oswald', sans-serif; color: #e0d5bc;
@@ -38,7 +47,14 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 1rem;
   }
+  .hh-topbar-left { display: flex; flex-direction: column; gap: 2px; flex-shrink: 0; }
+  .hh-tb-logo { font-size: 18px; font-weight: 700; letter-spacing: 5px; text-transform: uppercase;
+    color: #b8962e; line-height: 1; }
+  .hh-tb-sub { font-size: 10px; letter-spacing: 3px; color: #5a5030; text-transform: uppercase;
+    font-family: 'IM Fell English', serif; font-style: italic; }
+  .hh-topbar-right { display: flex; align-items: center; gap: 0.8rem; flex-shrink: 0; }
   .hh-burger {
     display: flex; flex-direction: column; justify-content: center; gap: 5px;
     width: 38px; height: 38px; cursor: pointer; background: none;
@@ -50,6 +66,59 @@
   .hh-burger:hover span, .hh-burger.open span { background: #b8962e; }
 
   .hh-audio-ctrl { display: flex; align-items: center; gap: 8px; }
+  
+  /* Přepínač světlo/tma */
+  .hh-theme-switch { display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; }
+  .hh-theme-icon { font-size: 13px; color: #c8a84a; width: 14px; text-align: center; line-height: 1; }
+  .hh-switch-track { width: 34px; height: 18px; background: #1a1408; border-radius: 9px;
+    position: relative; border: 1px solid #6a5828; transition: background 0.3s; }
+  .hh-switch-knob { width: 12px; height: 12px; background: #b8962e; border-radius: 50%;
+    position: absolute; top: 2px; left: 2px; transition: transform 0.25s; }
+  html.light .hh-switch-knob { transform: translateX(16px); }
+
+  /* Přepínač velikosti textu */
+  .hh-fs-switch { display: flex; align-items: center; gap: 2px; background: #1a1408;
+    border: 1px solid #5a4820; border-radius: 2px; padding: 2px; }
+  .hh-fs-btn { background: none; border: none; cursor: pointer; font-family: 'Oswald', sans-serif;
+    font-weight: 600; color: #c8a84a; padding: 4px 7px; border-radius: 1px;
+    transition: background 0.15s, color 0.15s; line-height: 1; }
+  .hh-fs-btn:hover { color: #b8962e; }
+  .hh-fs-btn.active { background: #b8962e; color: #0d0b08; }
+  .hh-fs-btn.s { font-size: 10px; } .hh-fs-btn.m { font-size: 13px; } .hh-fs-btn.l { font-size: 16px; }
+
+  /* Light mód pro homepage */
+  html.light .hh { background: #f5f0e8; color: #2a2010; }
+  html.light body, html.light { background: #ede8dc; }
+  html.light .hh-topbar-wrap { background: #ede8dc; border-color: #c8b888; }
+  html.light .hh-switch-track { background: #d4c898; border-color: #b8a060; }
+  html.light .hh-fs-switch { background: #e0d8c8; border-color: #c4b898; }
+  html.light .hh-fs-btn { color: #6a5828; }
+  html.light .hh-fs-btn.active { background: #b8962e; color: #fff; }
+  html.light .hh-panel { background: #f0ead8; border-color: #c8b888; }
+  html.light .hh-panel-header { border-color: #d8cca8; }
+  html.light .hh-panel-item { color: #5a4828; border-color: #e0d4b8; }
+  html.light .hh-panel-item:hover { background: #e8e0cc; }
+  html.light .hh-panel-content { background: #ede8dc; border-color: #e0d4b8; }
+  html.light .hh-panel-content p { color: #5a4828; }
+  html.light .hh-grid { background: #c8b888; }
+  html.light .hh-dil { background: #f0ead8; }
+  html.light .hh-dil.available:hover { background: #e8e0cc; }
+  html.light .hh-chars { background: #c8b888; }
+  html.light .hh-char { background: #f0ead8; }
+  html.light .hh-char:hover { background: #e8e0cc; }
+  html.light .hh-char-role { color: #8a7040; }
+  html.light .hh-char-name { color: #2a1a08; }
+  html.light .hh-char-desc { color: #5a4828; }
+  html.light .hh-dil-intro-text { color: #5a4828; }
+  html.light .hh-s2-logo { color: #8a7040; }
+  html.light .hh-s2-title { color: #1a1008; }
+  html.light .hh-s2-period { color: #7a6038; }
+  html.light .hh-eyebrow { color: #8a7040; }
+  html.light .hh-logo { color: #1a1008; }
+  html.light .hh-rule { background: #b8962e; }
+  html.light .hh-section-label { color: #8a7040; }
+  html.light .hh-nl-input { background: #e8e0cc; border-color: #c8b888; color: #2a1a08; }
+  html.light .hh-overlay { background: rgba(0,0,0,0.3); }
   .hh-audio-play {
     background: none; border: 1px solid #2e2818; color: #7a6840;
     width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
@@ -147,7 +216,7 @@
 
   /* Úvod */
   .hh-intro { max-width: 720px; margin: 2rem auto 0; padding: 0 2rem; }
-  .hh-intro-text { font-family: 'Lora', serif; font-size: 16px; line-height: 1.9; color: #7a6a50; font-style: italic; }
+  .hh-intro-text { font-family: 'Lora', serif; font-size: var(--fs-intro, 16px); line-height: 1.9; color: var(--text-dim, #7a6a50); font-style: italic; }
   .hh-intro-rule { width: 80px; height: 1px; background: linear-gradient(90deg, transparent, #b8962e, transparent); margin: 1.8rem auto 0; }
 
   .hh-section-label { font-size: 18px; letter-spacing: 5px; color: #5a5030; text-transform: uppercase; text-align: center; margin: 1.5rem 0 1.4rem; }
@@ -196,7 +265,7 @@
 
   /* Intro dílu */
   .hh-dil-intro { max-width: 720px; margin: 1.6rem auto 0; padding: 0 2rem; }
-  .hh-dil-intro-text { font-family: 'Lora', serif; font-size: 16px; line-height: 1.9; color: #7a6a50; font-style: italic; }
+  .hh-dil-intro-text { font-family: 'Lora', serif; font-size: var(--fs-intro, 16px); line-height: 1.9; color: var(--text-dim, #7a6a50); font-style: italic; }
 
   /* Postavy */
   .hh-chars { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
@@ -227,10 +296,38 @@
     text-transform: uppercase; padding: 3px 8px; border-radius: 2px; font-weight: 600; }
   .hh-badge-real { background: #1e2a1e; color: #6a9a6a; border: 1px solid #2e4a2e; }
   .hh-badge-fiction { background: #2a1e2a; color: #9a6a9a; border: 1px solid #4a2e4a; }
-  .hh-char-desc { font-family: 'Lora', serif; font-size: 21px; font-style: italic; color: #6a5e48; line-height: 1.6; }
+  .hh-char-desc { font-family: 'Lora', serif; font-size: var(--fs-desc, 18px); font-style: italic; color: var(--text-dim, #6a5e48); line-height: 1.6; }
   .hh-char:hover .hh-char-role { color: #b8962e; }
   .hh-char:hover .hh-char-name { color: #f0e6c8; }
   .hh-char:hover .hh-char-desc { color: #9a8a68; }
+
+  /* ══ PŘIPRAVUJEME overlay ══ */
+  .hh-coming-soon-wrap { position: relative; }
+  .hh-coming-soon-wrap .hh-coming-overlay {
+    position: absolute; inset: 0; z-index: 4;
+    background: rgba(8,6,3,0.62);
+    display: flex; align-items: center; justify-content: center; }
+  .hh-coming-overlay span {
+    font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 700;
+    letter-spacing: 5px; text-transform: uppercase; color: #b8962e;
+    border: 1px solid #b8962e; padding: 7px 18px;
+    background: rgba(13,11,8,0.88); }
+  /* Díl s obrázkem ale coming-soon — ne locked opacity */
+  .hh-dil.coming .hh-dil-img img { filter: contrast(1.0) saturate(0.2) brightness(0.35); }
+  /* Fallback když obrázek ještě neexistuje */
+  .hh-dil.coming .hh-dil-img img[src=""] ,
+  .hh-dil.coming .hh-dil-img { background: #0e0c09; }
+  .hh-dil.coming .hh-dil-img img { color: transparent; }
+  .hh-dil.coming .hh-dil-num { color: #3a3020; }
+  .hh-dil.coming .hh-dil-title { color: #4a4030; }
+  .hh-dil.coming .hh-dil-year { color: #3a3020; }
+  /* Postava coming-soon */
+  .hh-char.coming { cursor: default; pointer-events: none; }
+  .hh-char.coming .hh-char-img img { filter: contrast(1.0) saturate(0.15) brightness(0.3); }
+  .hh-char.coming .hh-char-role { color: #3a3420; }
+  .hh-char.coming .hh-char-name { color: #4a4030; }
+  .hh-char.coming .hh-char-desc { color: #3a3020; }
+  .hh-char.coming .hh-gold-line { background: transparent !important; }
 
   /* Choices label */
   .hh-choices-label { font-size: 15px; letter-spacing: 3px; color: var(--text-faint); text-transform: uppercase; margin-bottom: 1.2rem; font-weight: 600; }
@@ -373,20 +470,37 @@
   .hh-comment-empty { font-size: 15px; }
 
 </style>
+
 </head>
 <body>
 
 <!-- ══ GLOBAL TOPBAR ══ -->
 <div class="hh-topbar-wrap">
   <div class="hh-topbar-inner">
-    <button class="hh-burger" id="burger-btn" onclick="openPanel()" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
-    <div class="hh-audio-ctrl">
-      <button class="hh-audio-play" id="audio-play-btn" onclick="toggleAudio()" title="Hudba">▶</button>
-      <span class="hh-vol-icon">♪</span>
-      <input class="hh-vol-slider" type="range" min="0" max="1" step="0.05" value="0.5"
-        oninput="setVol(this.value)" title="Hlasitost"/>
+    <div class="hh-topbar-left">
+      <span class="hh-tb-logo">Husité</span>
+      <span class="hh-tb-sub">Interaktivní gamebook</span>
+    </div>
+    <div class="hh-topbar-right">
+      <div class="hh-theme-switch" onclick="toggleTheme()" title="Tmavý / světlý režim">
+        <span class="hh-theme-icon">☾</span>
+        <div class="hh-switch-track"><div class="hh-switch-knob"></div></div>
+        <span class="hh-theme-icon">☀</span>
+      </div>
+      <div class="hh-fs-switch">
+        <button class="hh-fs-btn s" onclick="setFs('small')">A</button>
+        <button class="hh-fs-btn m active" onclick="setFs('medium')">A</button>
+        <button class="hh-fs-btn l" onclick="setFs('large')">A</button>
+      </div>
+      <div class="hh-audio-ctrl">
+        <button class="hh-audio-play" id="audio-play-btn" onclick="toggleAudio()" title="Hudba">▶</button>
+        <span class="hh-vol-icon">♪</span>
+        <input class="hh-vol-slider" type="range" min="0" max="1" step="0.05" value="0.5"
+          oninput="setVol(this.value)" title="Hlasitost"/>
+      </div>
+      <button class="hh-burger" id="burger-btn" onclick="openPanel()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </div>
 </div>
@@ -415,43 +529,14 @@
     </div>
     <div class="hh-panel-content" id="kontakt-content">
       <p class="hh-nl-p">Hra vzniká postupně – nové díly, nové postavy, nový obsah. Pokud chceš vědět, kdy vyjde něco nového, nech nám svůj e-mail.</p>
-      <!-- Brevo newsletter formulář -->
-      <div id="sib-form-container" style="font-family:'Oswald',sans-serif;">
-        <form id="sib-form" method="POST"
-          action="https://b55dbd4d.sibforms.com/serve/MUIFAP3k6bd31cCgVW0SK3mwWrZRHQ30UHy9JUmqmrI0v0QtlW_7BRiBu8wAqwwS7E8XcpX-089CdPjeIVXd6QLM0xS-VxBEhuXPp9l0w8SDF7mQQHsuUtpl660xZ4t3OMoONKJj3VM7GntACbEjs9wyUeESneXWNS2UeyjrQUKcMX8VXGipNB3ma28geJNx7V_yhnnmzhThWmPS6Q=="
-          data-type="subscription">
-          <input class="hh-nl-input" type="email" name="EMAIL"
-            placeholder="Tvůj e-mail" required style="margin-bottom:10px;"/>
-          <input type="hidden" name="locale" value="cs"/>
-          <button class="hh-nl-btn" type="submit">Připojit se k výpravě</button>
-        </form>
-        <p class="hh-nl-ok" id="brevo-success" style="display:none;">
-          Odesláno. Potvrzovací e-mail dorazí za chvíli. Tentokrát bez latiny a bez čekání na glejt.
-        </p>
+      <!-- Brevo newsletter – vlastní formulář přes API -->
+      <div id="nl-form-wrap">
+        <input class="hh-nl-input" type="email" id="nl-email" placeholder="tvuj@email.cz" autocomplete="email"/>
+        <p style="font-family:'Lora',serif;font-size:11px;color:#5a5030;margin:6px 0 10px;font-style:italic;">Souhlasím se zpracováním e-mailu za účelem zasílání novinek o projektu Husité. Odvolat mohu kdykoli.</p>
+        <button class="hh-nl-btn" onclick="submitNewsletter()">Připojit se k výpravě</button>
+        <p id="nl-msg" style="display:none;font-family:'Lora',serif;font-size:13px;margin-top:10px;"></p>
       </div>
-      <!-- Brevo required script -->
-      <script>
-        (function() {
-          var form = document.getElementById('sib-form');
-          if (!form) return;
-          form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            var data = new FormData(form);
-            fetch(form.action, {
-              method: 'POST',
-              body: data,
-              mode: 'no-cors'
-            }).then(function() {
-              form.style.display = 'none';
-              document.getElementById('brevo-success').style.display = 'block';
-            }).catch(function() {
-              form.style.display = 'none';
-              document.getElementById('brevo-success').style.display = 'block';
-            });
-          });
-        })();
-      </script>
-      </div>
+    </div>
 
     <div class="hh-panel-item" id="komentar-toggle" onclick="toggleItem('komentar')">
       <span>Zanechat komentář</span><span class="arr">›</span>
@@ -519,13 +604,83 @@
         </div>
         <span class="hh-dil-arrow">→</span>
       </div>
-      <div class="hh-dil locked"><div class="hh-dil-img-placeholder"></div><div class="hh-dil-body"><div><div class="hh-dil-num">Díl II</div><div class="hh-dil-title">Defenestrace</div></div><div class="hh-dil-year">1419 – 1420</div></div></div>
-      <div class="hh-dil locked"><div class="hh-dil-img-placeholder"></div><div class="hh-dil-body"><div><div class="hh-dil-num">Díl III</div><div class="hh-dil-title">Bitva na Vítkově</div></div><div class="hh-dil-year">1420</div></div></div>
-      <div class="hh-dil locked"><div class="hh-dil-img-placeholder"></div><div class="hh-dil-body"><div><div class="hh-dil-num">Díl IV</div><div class="hh-dil-title">Žižkovo tažení</div></div><div class="hh-dil-year">1421 – 1423</div></div></div>
-      <div class="hh-dil locked"><div class="hh-dil-img-placeholder"></div><div class="hh-dil-body"><div><div class="hh-dil-num">Díl V</div><div class="hh-dil-title">Smrt Jana Žižky</div></div><div class="hh-dil-year">1424</div></div></div>
-      <div class="hh-dil locked"><div class="hh-dil-img-placeholder"></div><div class="hh-dil-body"><div><div class="hh-dil-num">Díl VI</div><div class="hh-dil-title">Spanilé jízdy</div></div><div class="hh-dil-year">1427 – 1430</div></div></div>
-      <div class="hh-dil locked"><div class="hh-dil-img-placeholder"></div><div class="hh-dil-body"><div><div class="hh-dil-num">Díl VII</div><div class="hh-dil-title">Basilejský koncil</div></div><div class="hh-dil-year">1431 – 1433</div></div></div>
-      <div class="hh-dil locked"><div class="hh-dil-img-placeholder"></div><div class="hh-dil-body"><div><div class="hh-dil-num">Díl VIII</div><div class="hh-dil-title">Bitva u Lipan</div></div><div class="hh-dil-year">1434</div></div></div>
+      <div class="hh-dil coming">
+        <div class="hh-dil-img hh-coming-soon-wrap">
+          <img src="images/dil-2.jpg" alt="Defenestrace"/>
+          <div class="hh-dil-img-fade"></div>
+          <div class="hh-coming-overlay"><span>Připravujeme</span></div>
+        </div>
+        <div class="hh-dil-body">
+          <div><div class="hh-dil-num">Díl II</div><div class="hh-dil-title">Defenestrace</div></div>
+          <div class="hh-dil-year">1419 – 1420</div>
+        </div>
+      </div>
+      <div class="hh-dil coming">
+        <div class="hh-dil-img hh-coming-soon-wrap">
+          <img src="images/dil-3.jpg" alt="Bitva na Vítkově"/>
+          <div class="hh-dil-img-fade"></div>
+          <div class="hh-coming-overlay"><span>Připravujeme</span></div>
+        </div>
+        <div class="hh-dil-body">
+          <div><div class="hh-dil-num">Díl III</div><div class="hh-dil-title">Bitva na Vítkově</div></div>
+          <div class="hh-dil-year">1420</div>
+        </div>
+      </div>
+      <div class="hh-dil coming">
+        <div class="hh-dil-img hh-coming-soon-wrap">
+          <img src="images/dil-4.jpg" alt="Žižkovo tažení"/>
+          <div class="hh-dil-img-fade"></div>
+          <div class="hh-coming-overlay"><span>Připravujeme</span></div>
+        </div>
+        <div class="hh-dil-body">
+          <div><div class="hh-dil-num">Díl IV</div><div class="hh-dil-title">Žižkovo tažení</div></div>
+          <div class="hh-dil-year">1421 – 1423</div>
+        </div>
+      </div>
+      <div class="hh-dil coming">
+        <div class="hh-dil-img hh-coming-soon-wrap">
+          <img src="images/dil-5.jpg" alt="Smrt Jana Žižky"/>
+          <div class="hh-dil-img-fade"></div>
+          <div class="hh-coming-overlay"><span>Připravujeme</span></div>
+        </div>
+        <div class="hh-dil-body">
+          <div><div class="hh-dil-num">Díl V</div><div class="hh-dil-title">Smrt Jana Žižky</div></div>
+          <div class="hh-dil-year">1424</div>
+        </div>
+      </div>
+      <div class="hh-dil coming">
+        <div class="hh-dil-img hh-coming-soon-wrap">
+          <img src="images/dil-6.jpg" alt="Spanilé jízdy"/>
+          <div class="hh-dil-img-fade"></div>
+          <div class="hh-coming-overlay"><span>Připravujeme</span></div>
+        </div>
+        <div class="hh-dil-body">
+          <div><div class="hh-dil-num">Díl VI</div><div class="hh-dil-title">Spanilé jízdy</div></div>
+          <div class="hh-dil-year">1427 – 1430</div>
+        </div>
+      </div>
+      <div class="hh-dil coming">
+        <div class="hh-dil-img hh-coming-soon-wrap">
+          <img src="images/dil-7.jpg" alt="Basilejský koncil"/>
+          <div class="hh-dil-img-fade"></div>
+          <div class="hh-coming-overlay"><span>Připravujeme</span></div>
+        </div>
+        <div class="hh-dil-body">
+          <div><div class="hh-dil-num">Díl VII</div><div class="hh-dil-title">Basilejský koncil</div></div>
+          <div class="hh-dil-year">1431 – 1433</div>
+        </div>
+      </div>
+      <div class="hh-dil coming">
+        <div class="hh-dil-img hh-coming-soon-wrap">
+          <img src="images/dil-8.jpg" alt="Bitva u Lipan"/>
+          <div class="hh-dil-img-fade"></div>
+          <div class="hh-coming-overlay"><span>Připravujeme</span></div>
+        </div>
+        <div class="hh-dil-body">
+          <div><div class="hh-dil-num">Díl VIII</div><div class="hh-dil-title">Bitva u Lipan</div></div>
+          <div class="hh-dil-year">1434</div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -582,11 +737,11 @@
         </div>
       </a>
 
-      <a class="hh-char" href="vaclav/kap-01-betlemska-kaple.html">
-        <div class="hh-char-img">
+      <a class="hh-char coming" href="vaclav/kap-01-betlemska-kaple.html">
+        <div class="hh-char-img hh-coming-soon-wrap">
           <img src="images/vaclav-z-dube.jpg" alt="Václav z Dubé"/>
           <div class="hh-char-fade"></div>
-          <div class="hh-char-play"><span>Hrát</span></div>
+          <div class="hh-coming-overlay"><span>Připravujeme</span></div>
         </div>
         <div class="hh-gold-line"></div>
         <div class="hh-char-info">
@@ -597,11 +752,11 @@
         </div>
       </a>
 
-      <a class="hh-char" href="jakub/kap-01-betlemska-kaple.html">
-        <div class="hh-char-img">
+      <a class="hh-char coming" href="jakub/kap-01-betlemska-kaple.html">
+        <div class="hh-char-img hh-coming-soon-wrap">
           <img src="images/jakub-vlcek.jpg" alt="Jakub Vlček"/>
           <div class="hh-char-fade"></div>
-          <div class="hh-char-play"><span>Hrát</span></div>
+          <div class="hh-coming-overlay"><span>Připravujeme</span></div>
         </div>
         <div class="hh-gold-line"></div>
         <div class="hh-char-info">
@@ -697,21 +852,79 @@
   }
   function setVol(v) { audio.volume = v; }
 
-  // ══ NEWSLETTER ══
-  function handleNewsletter(e) {
-    e.preventDefault();
-    var form = e.target;
-    fetch('/', { method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams(new FormData(form)).toString()
-    }).finally(function() {
-      form.style.display = 'none';
-      document.getElementById('nl-ok').style.display = 'block';
+  // ══ THEME & FONT SIZE (stejný systém jako textové stránky) ══
+  var DARK = {'--bg':'#0d0b08','--bg-bar':'#2a2418','--bg-card':'#131008','--bg-menu':'#1a1510','--border':'#1e1a10','--border-mid':'#3a3020','--gold':'#b8962e','--gold-dim':'#7a6840','--text-main':'#c8b890','--text-dim':'#8a7a5a','--text-faint':'#5a5030','--text-head':'#f0e6c8'};
+  var LIGHT = {'--bg':'#f4f0e6','--bg-bar':'#ddd5be','--bg-card':'#e8e0cc','--bg-menu':'#e0d8c4','--border':'#d4c9aa','--border-mid':'#c4b898','--gold':'#8a6e18','--gold-dim':'#a08830','--text-main':'#2a2010','--text-dim':'#5a4e30','--text-faint':'#8a7e60','--text-head':'#18120a'};
+  function applyTheme(isLight) {
+    var root = document.documentElement;
+    var vars = isLight ? LIGHT : DARK;
+    for (var k in vars) root.style.setProperty(k, vars[k]);
+    root.style.background = vars['--bg'];
+    document.body.style.background = vars['--bg'];
+    root.classList.toggle('light', isLight);
+    var knob = document.querySelector('.hh-switch-knob');
+    if (knob) knob.style.transform = isLight ? 'translateX(16px)' : '';
+  }
+  function toggleTheme() {
+    var isLight = !document.documentElement.classList.contains('light');
+    localStorage.setItem('hh-theme', isLight ? 'light' : 'dark');
+    applyTheme(isLight);
+  }
+  var fsSizes = {small:'15px', medium:'18px', large:'22px'};
+  var fsDescSizes = {small:'16px', medium:'18px', large:'21px'};
+  var fsIntroSizes = {small:'14px', medium:'16px', large:'19px'};
+  function setFs(size) {
+    document.body.style.setProperty('--fs-desc', fsDescSizes[size]);
+    document.body.style.setProperty('--fs-intro', fsIntroSizes[size]);
+    document.querySelectorAll('.hh-fs-btn').forEach(function(b) { b.classList.remove('active'); });
+    var key = {small:'s', medium:'m', large:'l'}[size];
+    var btn = document.querySelector('.hh-fs-btn.' + key);
+    if (btn) btn.classList.add('active');
+    localStorage.setItem('hh-fs', size);
+  }
+  (function init() {
+    applyTheme(localStorage.getItem('hh-theme') === 'light');
+    setFs(localStorage.getItem('hh-fs') || 'medium');
+  })();
+
+  // ══ NEWSLETTER – Brevo API ══
+  function submitNewsletter() {
+    var email = document.getElementById('nl-email').value.trim();
+    var msg = document.getElementById('nl-msg');
+    if (!email || !email.includes('@')) {
+      msg.style.display = 'block';
+      msg.style.color = '#b8492e';
+      msg.textContent = 'Zadej platný e-mail.';
+      return;
+    }
+    var btn = document.querySelector('#nl-form-wrap .hh-nl-btn');
+    btn.disabled = true;
+    btn.textContent = 'Odesílám…';
+    fetch('/.netlify/functions/subscribe', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: email
+      })
+    }).then(function(r) {
+      if (r.ok || r.status === 201 || r.status === 204) {
+        document.getElementById('nl-form-wrap').innerHTML =
+          '<p style="font-family:\'Lora\',serif;font-size:14px;color:#6a9a6a;font-style:italic;">Odesláno. Potvrzovací e-mail dorazí za chvíli — tentokrát bez latiny a bez průtahů.</p>';
+      } else {
+        return r.json().then(function(d) { throw new Error(d.message || r.status); });
+      }
+    }).catch(function(e) {
+      btn.disabled = false;
+      btn.textContent = 'Připojit se k výpravě';
+      msg.style.display = 'block';
+      msg.style.color = '#b8492e';
+      msg.textContent = 'Něco se pokazilo, zkus to znovu.';
     });
   }
 
-  // Index je vždy tmavý
-  document.documentElement.classList.remove('light');
 </script>
+
 </body>
 </html>

@@ -143,7 +143,8 @@
     color: var(--gold); line-height: 1; cursor: pointer; background: none; border: none;
     font-family: 'Oswald', sans-serif; padding: 0; transition: color 0.15s; }
   .hh-tb-logo:hover { opacity: 0.8; }
-  .hh-tb-sub { font-size: 10px; letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase; }
+  .hh-tb-sub { font-size: 10px; letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase;
+    font-family: 'IM Fell English', serif; font-style: italic; }
   .hh-topbar-right { display: flex; align-items: center; gap: 0.8rem; }
 
   /* Přepínač světlo/tma */
@@ -350,11 +351,80 @@
 
   /* Nadpis nad volbami */
   .hh-choices-label { font-size: 15px; letter-spacing: 3px; color: var(--text-faint); text-transform: uppercase; margin-bottom: 1.2rem; font-weight: 600; }
+
+  /* ══ SIDE PANEL ══ */
+  .hh-overlay-panel { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:300; }
+  .hh-overlay-panel.open { display:block; }
+  .hh-side-panel { position:fixed; top:0; right:0; width:min(340px,85vw); height:100vh;
+    background:var(--bg-card,#131008); border-left:1px solid var(--border-mid,#3a3020);
+    z-index:400; transform:translateX(100%); transition:transform 0.28s cubic-bezier(0.4,0,0.2,1);
+    display:flex; flex-direction:column; overflow:hidden; }
+  .hh-side-panel.open { transform:translateX(0); }
+  .hh-side-panel-header { display:flex; align-items:center; justify-content:space-between;
+    padding:0 1.4rem; height:62px; border-bottom:1px solid var(--border,#1e1a10); flex-shrink:0; }
+  .hh-side-panel-title { font-size:11px; letter-spacing:5px; color:var(--text-faint); text-transform:uppercase; }
+  .hh-side-panel-close { background:none; border:none; color:var(--text-faint); font-size:22px;
+    cursor:pointer; padding:4px 8px; line-height:1; transition:color 0.15s; }
+  .hh-side-panel-close:hover { color:var(--gold); }
+  .hh-side-panel-nav { flex:1; overflow-y:auto; }
+  .hh-side-item { display:flex; align-items:center; justify-content:space-between;
+    padding:15px 1.4rem; font-size:12px; letter-spacing:3px; text-transform:uppercase;
+    color:var(--text-dim); cursor:pointer; border-bottom:1px solid var(--border);
+    transition:background 0.12s,color 0.12s; user-select:none; text-decoration:none; }
+  .hh-side-item:hover { background:var(--bg-card); color:var(--gold); }
+  .hh-side-item .arr { font-size:12px; color:var(--text-faint); transition:transform 0.2s; }
+  .hh-side-item.sub-open .arr { transform:rotate(90deg); }
+  .hh-side-content { display:none; border-bottom:1px solid var(--border); background:var(--bg); }
+  .hh-side-content.open { display:block; }
+  .hh-side-content p { font-family:'IM Fell English',serif; font-size:14px; line-height:1.8;
+    color:var(--text-dim); margin:0; padding:1.2rem 1.4rem; font-style:italic; }
+  .hh-submenu-item { display:flex; align-items:center; gap:10px; padding:10px 1.4rem;
+    font-size:12px; letter-spacing:2px; color:var(--text-dim); text-decoration:none;
+    border-bottom:1px solid var(--border); transition:color 0.12s,background 0.12s; }
+  .hh-submenu-item:hover, .hh-submenu-item.current { color:var(--gold); background:var(--bg-card); }
+  .kap-num { font-size:10px; color:var(--text-faint); width:22px; flex-shrink:0; }
+  .hh-nl-input { width:100%; background:var(--bg-card); border:1px solid var(--border-mid);
+    color:var(--text-main); font-family:'IM Fell English',serif; font-size:14px;
+    padding:9px 12px; outline:none; margin-bottom:6px; }
+  .hh-nl-input:focus { border-color:var(--gold); }
+  .hh-nl-btn { width:100%; background:transparent; border:1px solid var(--gold); color:var(--gold);
+    font-family:'Oswald',sans-serif; font-size:11px; font-weight:600; letter-spacing:4px;
+    text-transform:uppercase; padding:10px; cursor:pointer; transition:all 0.15s; }
+  .hh-nl-btn:hover { background:var(--gold); color:#0d0b08; }
+  .hh-side-nl-wrap { padding:1rem 1.4rem; }
+
+  /* ══ TOPBAR WRAP ══ */
+  .hh-topbar-wrap { background: var(--bg-bar, #2a2418); border-bottom: 1px solid var(--border-mid, #3a3020);
+    position: sticky; top: 0; z-index: 100; }
+  /* Audio v topbaru */
+  .hh-tb-audio { display: flex; align-items: center; gap: 6px; }
+  .hh-tb-audio.inactive { opacity: 0.25; pointer-events: none; }
+  .hh-tb-audio-play { background: none; border: 1px solid #2e2818; color: #7a6840;
+    width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 10px;
+    display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+  .hh-tb-audio-play:hover, .hh-tb-audio-play.playing { border-color: var(--gold); color: var(--gold); }
+  .hh-vol-slider { -webkit-appearance: none; width: 50px; height: 2px;
+    background: #2a2418; border-radius: 1px; outline: none; cursor: pointer; }
+  .hh-vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 8px; height: 8px;
+    border-radius: 50%; background: var(--gold); cursor: pointer; }
+  /* Avatar floatující vpravo u nadpisu */
+  .hh-char-float { float: right; text-align: center; margin: 0 0 1rem 1.5rem; }
+  .hh-char-float-avatar { width: 72px; height: 72px; border-radius: 50%; overflow: hidden;
+    border: 2px solid var(--gold); background: #1a1510; margin: 0 auto 5px; }
+  .hh-char-float-avatar img { width: 100%; height: 100%; object-fit: cover;
+    object-position: top center; filter: saturate(0.6) contrast(1.1); }
+  .hh-char-float-name { font-size: 9px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--gold-dim); white-space: nowrap; }
+  @media (max-width: 480px) {
+    .hh-char-float { display: none; }
+  }
+
 </style>
 </head>
 <body>
 <div class="hh">
 
+<div class="hh-topbar-wrap">
   <div class="hh-topbar">
     <div class="hh-topbar-left">
       <a class="hh-tb-logo" href="../index.html">Husité</a>
@@ -371,17 +441,31 @@
         <button class="hh-fs-btn m active" onclick="setFs('medium')">A</button>
         <button class="hh-fs-btn l" onclick="setFs('large')">A</button>
       </div>
-      <div class="hh-char-badge">
-        <div class="hh-char-avatar"><img src="../images/stepan-palec.jpg" alt="Štěpán Páleč"/></div>
-        <span class="hh-char-badge-name">Štěpán Páleč</span>
+      <div class="hh-tb-audio inactive" id="tb-audio-ctrl">
+        <button class="hh-tb-audio-play" id="tb-play-btn" onclick="toggleKapAudio()" title="Hudba">▶</button>
+        <span style="font-size:10px;color:#4a4020;">♪</span>
+        <input class="hh-vol-slider" type="range" min="0" max="1" step="0.05" value="0.8"
+          oninput="setKapVol(this.value)" id="vol-slider"/>
       </div>
-      <button class="hh-burger" id="burger" onclick="toggleMenu()" aria-label="Menu">
+      <button class="hh-burger" id="burger" onclick="openSidePanel()" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>
-      <div class="hh-overlay" id="overlay" onclick="closeMenu()"></div>
-      <div class="hh-dropdown" id="menu-dropdown">
-        <div class="hh-menu-item" id="kap-toggle" onclick="toggleSub()"><span>Přehled kapitol</span><span class="arrow">›</span></div>
-        <div class="hh-submenu" id="kap-submenu">
+    </div>
+  </div>
+</div>
+
+<!-- Overlay + Side panel -->
+<div class="hh-overlay-panel" id="panel-overlay-el" onclick="closeSidePanel()"></div>
+<div class="hh-side-panel" id="side-panel-el">
+  <div class="hh-side-panel-header">
+    <span class="hh-side-panel-title">Menu</span>
+    <button class="hh-side-panel-close" onclick="closeSidePanel()">×</button>
+  </div>
+  <nav class="hh-side-panel-nav">
+    <div class="hh-side-item" id="kap-toggle" onclick="toggleSideItem('kap')">
+      <span>Přehled kapitol</span><span class="arr">›</span>
+    </div>
+    <div class="hh-side-content" id="kap-content">
           <a class="hh-submenu-item" href="kap-01-betlemska-kaple.html"><span class="kap-num">1</span>Betlémská kaple</a>
           <a class="hh-submenu-item" href="kap-02-cesta-do-kostnice.html"><span class="kap-num">2</span>Cesta do Kostnice</a>
           <a class="hh-submenu-item" href="kap-03-prijezd-do-kostnice.html"><span class="kap-num">3</span>Příjezd do Kostnice</a>
@@ -391,31 +475,35 @@
           <a class="hh-submenu-item" href="kap-06-navsteva-v-cele.html"><span class="kap-num">6</span>Návštěva v cele</a>
           <a class="hh-submenu-item" href="kap-07-upaleni.html"><span class="kap-num">7</span>Upálení</a>
           <a class="hh-submenu-item" href="kap-08-odjezd-do-polska.html"><span class="kap-num">8</span>Odjezd do Polska</a>
+    </div>
+    <div class="hh-side-item" id="jak-toggle" onclick="toggleSideItem('jak')">
+      <span>Jak to funguje</span><span class="arr">›</span>
+    </div>
+    <div class="hh-side-content" id="jak-content">
+      <p>Hráč si na začátku vybírá jednu ze čtyř postav – každá má jiné postavení, jiný vztah k Husovi. Volby na konci každé kapitoly rozhodují o tom, jak se hráčova postava o událostech dozvídá.</p>
+    </div>
+    <div class="hh-side-item" id="kontakt-toggle" onclick="toggleSideItem('kontakt')">
+      <span>Chci zůstat v kontaktu</span><span class="arr">›</span>
+    </div>
+    <div class="hh-side-content" id="kontakt-content">
+      <div class="hh-side-nl-wrap">
+        <div id="nl-form-wrap">
+          <input class="hh-nl-input" type="email" id="nl-email" placeholder="tvuj@email.cz" autocomplete="email"/>
+          <p style="font-size:11px;color:var(--text-faint);margin:4px 0 8px;font-style:italic;font-family:'IM Fell English',serif;">Souhlasím se zpracováním e-mailu. Odvolat mohu kdykoli.</p>
+          <button class="hh-nl-btn" onclick="submitNewsletter()">Připojit se k výpravě</button>
+          <p id="nl-msg" style="display:none;font-size:13px;margin-top:8px;"></p>
         </div>
-        <a class="hh-menu-item" href="../index.html"><span>Přehled všech dílů</span><span class="arrow">›</span></a>
-        <a class="hh-menu-item" href="../index.html?screen=postavy"><span>Výběr postavy</span><span class="arrow">›</span></a>
       </div>
     </div>
-  </div>
+    <a class="hh-side-item" href="../index.html">
+      <span>Přehled dílů</span><span class="arr">›</span>
+    </a>
+    <a class="hh-side-item" href="../index.html?screen=postavy">
+      <span>Výběr postavy</span><span class="arr">›</span>
+    </a>
+  </nav>
+</div>
 
-  <!-- ══ AUDIO PŘEHRÁVAČ ══ -->
-  <audio id="kap-audio" preload="none"></audio>
-  <div class="hh-audio-bar" id="audio-bar">
-    <button class="hh-audio-btn" id="kap-play-btn" onclick="toggleKapAudio()" title="Přehrát / Pozastavit">▶</button>
-    <button class="hh-audio-btn" id="kap-mute-btn" onclick="toggleMute()" title="Ztlumit / Zapnout zvuk">🔊</button>
-    <div class="hh-audio-progress-wrap">
-      <div class="hh-audio-title" id="audio-title">Nahrávka kapitoly</div>
-      <div class="hh-audio-progress" id="audio-progress" onclick="seekAudio(event)">
-        <div class="hh-audio-fill" id="audio-fill"></div>
-      </div>
-    </div>
-    <span class="hh-audio-time" id="audio-time">0:00</span>
-    <div class="hh-audio-vol-wrap">
-      <span style="font-size:11px;color:var(--gold-dim)">♪</span>
-      <input class="hh-vol-sl" type="range" min="0" max="1" step="0.05" value="0.8"
-        oninput="setKapVol(this.value)" id="vol-slider"/>
-    </div>
-  </div>
 
 
   <div class="hh-chapter-header">
@@ -458,7 +546,13 @@
   var DARK = {'--bg':'#0d0b08','--bg-bar':'#2a2418','--bg-card':'#131008','--bg-menu':'#1a1510','--border':'#1e1a10','--border-mid':'#3a3020','--gold':'#b8962e','--gold-dim':'#7a6840','--text-main':'#c8b890','--text-dim':'#8a7a5a','--text-faint':'#5a5030','--text-head':'#f0e6c8'};
   var LIGHT = {'--bg':'#f4f0e6','--bg-bar':'#ddd5be','--bg-card':'#e8e0cc','--bg-menu':'#e0d8c4','--border':'#d4c9aa','--border-mid':'#c4b898','--gold':'#8a6e18','--gold-dim':'#a08830','--text-main':'#2a2010','--text-dim':'#5a4e30','--text-faint':'#8a7e60','--text-head':'#18120a'};
   function applyTheme(isLight) { var root=document.documentElement; var vars=isLight?LIGHT:DARK; for(var k in vars)root.style.setProperty(k,vars[k]); root.style.background=vars['--bg']; document.body.style.background=vars['--bg']; root.classList.toggle('light',isLight); syncSwitch(isLight); }
-  function toggleTheme() { var isLight=!document.documentElement.classList.contains('light'); localStorage.setItem('hh-theme',isLight?'light':'dark'); applyTheme(isLight); }
+  function toggleTheme() {
+    var isLight = !document.documentElement.classList.contains('light');
+    localStorage.setItem('hh-theme', isLight ? 'light' : 'dark');
+    document.documentElement.classList.toggle('light', isLight);
+    var knob = document.querySelector('.hh-switch-knob');
+    if (knob) knob.style.transform = isLight ? 'translateX(16px)' : '';
+  }
   function syncSwitch(isLight) { var k=document.querySelector('.hh-switch-knob'); if(k)k.style.transform=isLight?'translateX(16px)':''; }
   (function initTheme(){ applyTheme(localStorage.getItem('hh-theme')==='light'); })();
 
@@ -467,9 +561,84 @@
   function setFs(size){ document.body.style.setProperty('--fs',fsSizes[size]); document.querySelectorAll('.hh-fs-btn').forEach(function(b){b.classList.remove('active');}); var btn=document.querySelector('.hh-fs-btn.'+{small:'s',medium:'m',large:'l'}[size]); if(btn)btn.classList.add('active'); localStorage.setItem('hh-fs',size); }
   (function(){ var s=localStorage.getItem('hh-fs')||'medium'; setFs(s); })();
 
-  function toggleMenu(){ var open=document.getElementById('menu-dropdown').classList.toggle('open'); document.getElementById('burger').classList.toggle('open',open); document.getElementById('overlay').classList.toggle('open',open); }
-  function closeMenu(){ ['menu-dropdown','burger','overlay'].forEach(function(id){document.getElementById(id).classList.remove('open');}); }
-  function toggleSub(){ document.getElementById('kap-submenu').classList.toggle('open'); document.getElementById('kap-toggle').classList.toggle('sub-open'); }
+
+
+  // Audio element pro topbar přehrávač
+  var _kapAudio = new Audio();
+  (function(){
+    var path = window.location.pathname;
+    var m = path.match(/\/(palec|petr|vaclav|jakub)\/kap-(\d+[ab]?)/);
+    if (!m) return;
+    _kapAudio.src = '../audio/kap-' + m[2] + '-' + m[1] + '.mp3';
+    _kapAudio.preload = 'none';
+    var vol = parseFloat(localStorage.getItem('hh-audio-vol') || '0.8');
+    _kapAudio.volume = vol;
+    var sl = document.getElementById('vol-slider');
+    if (sl) sl.value = vol;
+  })();
+  function toggleKapAudio() {
+    var btn = document.getElementById('tb-play-btn');
+    if (!btn) return;
+    if (_kapAudio.paused) {
+      _kapAudio.play().catch(function(){});
+      btn.textContent = '⏸'; btn.classList.add('playing');
+    } else {
+      _kapAudio.pause();
+      btn.textContent = '▶'; btn.classList.remove('playing');
+    }
+  }
+  function setKapVol(v) { _kapAudio.volume = parseFloat(v); localStorage.setItem('hh-audio-vol', v); }
+
+  // ══ SIDE PANEL ══
+  function openSidePanel() {
+    document.getElementById('side-panel-el').classList.add('open');
+    document.getElementById('panel-overlay-el').classList.add('open');
+    document.getElementById('burger').classList.add('open');
+  }
+  function closeSidePanel() {
+    document.getElementById('side-panel-el').classList.remove('open');
+    document.getElementById('panel-overlay-el').classList.remove('open');
+    document.getElementById('burger').classList.remove('open');
+  }
+  function toggleSideItem(id) {
+    var c = document.getElementById(id+'-content');
+    var t = document.getElementById(id+'-toggle');
+    var isOpen = c.classList.toggle('open');
+    if (t) t.classList.toggle('sub-open', isOpen);
+    ['kap','jak','kontakt'].forEach(function(k) {
+      if (k !== id) {
+        var cc = document.getElementById(k+'-content');
+        var tt = document.getElementById(k+'-toggle');
+        if (cc) cc.classList.remove('open');
+        if (tt) tt.classList.remove('sub-open');
+      }
+    });
+  }
+    function submitNewsletter() {
+    var email = document.getElementById('nl-email').value.trim();
+    var msg = document.getElementById('nl-msg');
+    if (!email || !email.includes('@')) {
+      msg.style.display='block'; msg.style.color='#b8492e'; msg.textContent='Zadej platný e-mail.'; return;
+    }
+    var btn = document.querySelector('#nl-form-wrap button');
+    btn.disabled=true; btn.textContent='Odesílám…';
+    fetch('/.netlify/functions/subscribe', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email:email})
+    }).then(function(r){
+      if(r.ok||r.status===201||r.status===204){
+        document.getElementById('nl-form-wrap').innerHTML='<p style="font-size:14px;color:#6a9a6a;font-style:italic;">Odesláno. Potvr. e-mail dorazí za chvíli.</p>';
+      } else { return r.json().then(function(d){throw new Error(d.message||r.status);}); }
+    }).catch(function(){
+      btn.disabled=false; btn.textContent='Připojit se k výpravě';
+      msg.style.display='block'; msg.style.color='#b8492e'; msg.textContent='Něco se pokazilo, zkus to znovu.';
+    });
+  }).catch(function(){
+      btn.disabled=false; btn.textContent='Připojit se k výpravě';
+      msg.style.display='block'; msg.style.color='#b8492e'; msg.textContent='Něco se pokazilo, zkus to znovu.';
+    });
+  }
 </script>
 </body>
 </html>
