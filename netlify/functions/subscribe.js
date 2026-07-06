@@ -1,7 +1,4 @@
-// Server-side proxy for Brevo newsletter signup.
-// Keeps the Brevo API key out of client-side code; configure BREVO_API_KEY
-// as an environment variable in the Netlify site settings.
-
+// Server-side proxy for Brevo newsletter signup with double opt-in.
 exports.handler = async function (event) {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: JSON.stringify({ message: 'Method not allowed' }) };
@@ -24,16 +21,22 @@ exports.handler = async function (event) {
   }
 
   try {
-    const r = await fetch('https://api.brevo.com/v3/contacts', {
+    const r = await fetch('https://api.brevo.com/v3/contacts/doubleOptinConfirmation', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'api-key': apiKey
       },
-      body: JSON.stringify({ email: email, listIds: [3], updateEnabled: true })
+      body: JSON.stringify({
+        email: email,
+        includeListIds: [3],
+        templateId: 1,
+        redirectionUrl: 'https://hussitae.cz/potvrzen.html'
+      })
     });
 
-    if (r.ok || r.status === 201 || r.status === 204) {
+    // 204 = úspěch (no content)
+    if (r.status === 204 || r.ok) {
       return { statusCode: 200, body: JSON.stringify({ ok: true }) };
     }
 

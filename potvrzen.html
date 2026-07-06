@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<script>
+  (function(){
+    if(localStorage.getItem('hh-theme')==='light'){
+      document.documentElement.classList.add('light');
+    }
+  })();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Odběr potvrzen – Husité</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=IM+Fell+English:ital@0;1&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    --bg: #0d0b08; --bg-bar: #2a2418; --bg-card: #131008;
+    --border-mid: #3a3020; --gold: #b8962e; --gold-dim: #7a6840;
+    --text-main: #c8b890; --text-dim: #8a7a5a; --text-faint: #5a5030; --text-head: #f0e6c8;
+    background: var(--bg); color: var(--text-main);
+    font-family: 'Oswald', sans-serif;
+    min-height: 100vh; display: flex; flex-direction: column;
+  }
+  html.light body {
+    --bg: #f4f0e6; --bg-bar: #ddd5be; --bg-card: #e8e0cc;
+    --border-mid: #c4b898; --gold: #8a6e18; --gold-dim: #a08830;
+    --text-main: #2a2010; --text-dim: #5a4e30; --text-faint: #8a7e60; --text-head: #18120a;
+  }
+
+  /* Topbar */
+  .hh-topbar { background: var(--bg-bar); border-bottom: 1px solid var(--border-mid);
+    padding: 0 2rem; height: 62px; display: flex; align-items: center; }
+  .hh-tb-logo { font-size: 18px; font-weight: 700; letter-spacing: 5px;
+    text-transform: uppercase; color: var(--gold); text-decoration: none; }
+  .hh-tb-logo:hover { opacity: 0.8; }
+
+  /* Obsah */
+  .hh-wrap { flex: 1; display: flex; align-items: center; justify-content: center;
+    padding: 4rem 2rem; }
+  .hh-card { max-width: 520px; text-align: center; }
+  .hh-icon { font-size: 48px; margin-bottom: 1.5rem; line-height: 1; }
+  .hh-eyebrow { font-size: 10px; letter-spacing: 6px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 1rem; }
+  .hh-title { font-size: 32px; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--text-head); line-height: 1.2; margin-bottom: 1rem; }
+  .hh-rule { width: 60px; height: 1px; background: linear-gradient(90deg, var(--gold), transparent);
+    margin: 1.2rem auto; }
+  .hh-text { font-family: 'IM Fell English', serif; font-size: 17px; line-height: 1.8;
+    color: var(--text-dim); font-style: italic; margin-bottom: 2.5rem; }
+  .hh-btn { display: inline-flex; align-items: center; gap: 10px;
+    border: 1px solid var(--gold); color: var(--gold);
+    font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 600;
+    letter-spacing: 4px; text-transform: uppercase; padding: 13px 28px;
+    text-decoration: none; transition: all 0.18s; }
+  .hh-btn:hover { background: var(--gold); color: #0d0b08; }
+</style>
+</head>
+<body>
+
+<div class="hh-topbar">
+  <a class="hh-tb-logo" href="/">Husité</a>
+</div>
+
+<div class="hh-wrap">
+  <div class="hh-card">
+    <div class="hh-icon">✦</div>
+    <p class="hh-eyebrow">Zprávy z výpravy</p>
+    <h1 class="hh-title">Odběr potvrzen</h1>
+    <div class="hh-rule"></div>
+    <p class="hh-text">Vítej v řadách výpravy. Dáme ti vědět, až vyjde nový díl, nová postava nebo nový obsah. Tentokrát bez latiny, bez průtahů a bez nutnosti platit glejt.</p>
+    <a class="hh-btn" href="/">← Zpět na začátek</a>
+  </div>
+</div>
+
+</body>
+</html>

@@ -507,6 +507,11 @@
 
 
   <div class="hh-chapter-header">
+  <div class="hh-char-float">
+    <div class="hh-char-float-avatar"><img src="../images/stepan-palec.jpg" alt="Štěpán Páleč"/></div>
+    <div class="hh-char-float-name">Štěpán Páleč</div>
+  </div>
+
     <p class="hh-chapter-num">Kapitola 8 &nbsp;·&nbsp; Štěpán Páleč</p>
     <h1 class="hh-chapter-title">Odjezd do Polska</h1>
     <p class="hh-chapter-meta">Kostnice, podzim 1415</p>
@@ -615,10 +620,6 @@
         document.getElementById('nl-form-wrap').innerHTML='<p style="font-size:14px;color:#6a9a6a;font-style:italic;">Odesláno. Potvr. e-mail dorazí za chvíli.</p>';
       } else { return r.json().then(function(d){throw new Error(d.message||r.status);}); }
     }).catch(function(){
-      btn.disabled=false; btn.textContent='Připojit se k výpravě';
-      msg.style.display='block'; msg.style.color='#b8492e'; msg.textContent='Něco se pokazilo, zkus to znovu.';
-    });
-  }).catch(function(){
       btn.disabled=false; btn.textContent='Připojit se k výpravě';
       msg.style.display='block'; msg.style.color='#b8492e'; msg.textContent='Něco se pokazilo, zkus to znovu.';
     });

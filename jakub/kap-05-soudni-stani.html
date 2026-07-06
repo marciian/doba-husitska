@@ -539,6 +539,11 @@
   -->
 
   <div class="hh-chapter-header">
+  <div class="hh-char-float">
+    <div class="hh-char-float-avatar"><img src="../images/jakub-vlcek.jpg" alt="Jakub Vlček"/></div>
+    <div class="hh-char-float-name">Jakub Vlček</div>
+  </div>
+
     <p class="hh-chapter-num">Kapitola 5 &nbsp;·&nbsp; Jakub Vlček</p>
     <h1 class="hh-chapter-title">Soudní stání</h1>
     <p class="hh-chapter-meta">Kostnice · červen 1415</p>
@@ -700,10 +705,6 @@
         document.getElementById('nl-form-wrap').innerHTML='<p style="font-size:14px;color:#6a9a6a;font-style:italic;">Odesláno. Potvr. e-mail dorazí za chvíli.</p>';
       } else { return r.json().then(function(d){throw new Error(d.message||r.status);}); }
     }).catch(function(){
-      btn.disabled=false; btn.textContent='Připojit se k výpravě';
-      msg.style.display='block'; msg.style.color='#b8492e'; msg.textContent='Něco se pokazilo, zkus to znovu.';
-    });
-  }).catch(function(){
       btn.disabled=false; btn.textContent='Připojit se k výpravě';
       msg.style.display='block'; msg.style.color='#b8492e'; msg.textContent='Něco se pokazilo, zkus to znovu.';
     });
