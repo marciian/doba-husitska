@@ -103,11 +103,14 @@
   html.light .hh-grid { background: #c8b888; }
   html.light .hh-dil { background: #f0ead8; }
   html.light .hh-dil.available:hover { background: #e8e0cc; }
+  html.light .hh-dil.available .hh-dil-title { color: #4a4030; }
+  html.light .hh-dil.available:hover .hh-dil-title { color: #b8962e; }
   html.light .hh-chars { background: #c8b888; }
   html.light .hh-char { background: #f0ead8; }
   html.light .hh-char:hover { background: #e8e0cc; }
   html.light .hh-char-role { color: #8a7040; }
   html.light .hh-char-name { color: #2a1a08; }
+  html.light .hh-char:hover .hh-char-name { color: #b8962e; }
   html.light .hh-char-desc { color: #5a4828; }
   html.light .hh-dil-intro-text { color: #5a4828; }
   html.light .hh-s2-logo { color: #8a7040; }
@@ -351,11 +354,16 @@
     .hh-intro { padding: 0 1.2rem; }
     .hh-dil-intro { padding: 0 1.2rem; }
   }
+  @media (max-width: 580px) {
+    .hh-topbar-inner { flex-wrap: wrap; height: auto; padding: 10px 1.2rem; row-gap: 10px; }
+    .hh-topbar-left { width: 100%; }
+    .hh-topbar-right { width: 100%; justify-content: space-between; gap: 6px; }
+    .hh-topbar-right .hh-vol-slider { width: 35px; }
+  }
   @media (max-width: 480px) {
     .hh-logo { font-size: 44px; letter-spacing: 4px; }
     .hh-s2-title { font-size: 32px; letter-spacing: 2px; }
     .hh-chars { grid-template-columns: 1fr; }
-    .hh-vol-slider { display: none; }
   }
 
   /* ══ SIDE PANEL – větší, výraznější ══ */
@@ -722,11 +730,11 @@
         </div>
       </a>
 
-      <a class="hh-char" href="petr/kap-01-betlemska-kaple.html">
-        <div class="hh-char-img">
+      <a class="hh-char coming" href="petr/kap-01-betlemska-kaple.html">
+        <div class="hh-char-img hh-coming-soon-wrap">
           <img src="images/petr-z-mladonovic.jpg" alt="Petr z Mladoňovic"/>
           <div class="hh-char-fade"></div>
-          <div class="hh-char-play"><span>Hrát</span></div>
+          <div class="hh-coming-overlay"><span>Připravujeme</span></div>
         </div>
         <div class="hh-gold-line"></div>
         <div class="hh-char-info">
@@ -839,6 +847,12 @@
   var audio = document.getElementById('menu-audio');
   var playBtn = document.getElementById('audio-play-btn');
   audio.volume = 0.5;
+  audio.play().then(function() {
+    playBtn.textContent = '⏸';
+    playBtn.classList.add('playing');
+  }).catch(function() {
+    // Prohlížeč zablokoval automatické přehrání se zvukem – uživatel spustí tlačítkem.
+  });
   function toggleAudio() {
     if (audio.paused) {
       audio.play().catch(function(){});
